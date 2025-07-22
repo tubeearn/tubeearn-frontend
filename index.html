@@ -1,133 +1,129 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TubeEarn - Home</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TubeEarn - India's No.1 Earning Platform</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
     body {
-      background-color: #0f0f0f;
-      color: #ffffff;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
     }
     header {
+      background: #ff0000;
+      color: white;
+      padding: 10px 20px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 12px 24px;
-      background-color: #202020;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+      align-items: center;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 999;
     }
-    .logo {
-      font-size: 24px;
-      font-weight: 700;
-      color: #ff0000;
+    header h1 {
+      margin: 0;
+      font-size: 22px;
     }
-    nav {
-      display: flex;
-      gap: 16px;
-    }
-    nav a {
-      text-decoration: none;
-      color: #fff;
-      font-weight: 500;
-    }
-    .main-content {
-      display: grid;
-      grid-template-columns: 1fr 4fr;
+    header .account {
+      font-weight: bold;
     }
     .sidebar {
-      background-color: #181818;
-      padding: 16px;
-      min-height: 100vh;
+      width: 250px;
+      background: #f1f1f1;
+      padding-top: 60px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      overflow-y: auto;
+      border-right: 1px solid #ccc;
+    }
+    .sidebar h2 {
+      padding: 10px;
+      margin: 0;
+      background: #ddd;
+      font-size: 16px;
     }
     .sidebar ul {
       list-style: none;
+      padding: 0;
     }
-    .sidebar li {
-      margin: 12px 0;
-      color: #ccc;
-      font-weight: 500;
+    .sidebar ul li {
+      padding: 10px 20px;
       cursor: pointer;
+      border-bottom: 1px solid #ccc;
     }
-    .sidebar li:hover {
-      color: #fff;
+    .sidebar ul li:hover {
+      background: #e1e1e1;
     }
-    .video-feed {
-      padding: 24px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 24px;
-    }
-    .video-card {
-      background-color: #1f1f1f;
-      border-radius: 10px;
-      overflow: hidden;
-      transition: transform 0.3s;
-    }
-    .video-card:hover {
-      transform: scale(1.03);
-    }
-    .video-card img {
+    .main {
+      margin-left: 250px;
+      padding: 80px 20px 20px;
       width: 100%;
-      height: auto;
+      overflow-y: auto;
     }
-    .video-info {
-      padding: 10px;
+    .section {
+      margin-bottom: 40px;
     }
-    .video-info h4 {
-      color: #fff;
-      font-size: 16px;
-    }
-    .video-info p {
-      color: #aaa;
-      font-size: 14px;
+    .section h3 {
+      margin-bottom: 10px;
+      color: #ff0000;
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo">TubeEarn</div>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Trending</a>
-      <a href="#">Subscriptions</a>
-      <a href="#">Library</a>
-    </nav>
-  </header>
-  <div class="main-content">
-    <aside class="sidebar">
-      <ul>
-        <li>🏠 Home</li>
-        <li>🔥 Shorts</li>
-        <li>🎥 Upload</li>
-        <li>💰 Wallet</li>
-        <li>📺 Live</li>
-        <li>🎤 Singing</li>
-        <li>🎁 Gifts</li>
-        <li>👤 Creator</li>
-        <li>🛒 Shopping</li>
-        <li>📚 Education</li>
-        <li>🧠 AI Tools</li>
-        <li>📈 Monetization</li>
-        <li>💼 Careers</li>
-      </ul>
-    </aside>
-    <section class="video-feed">
-      <div class="video-card">
-        <img src="https://via.placeholder.com/300x180" alt="Video Thumbnail">
-        <div class="video-info">
-          <h4>Sample Video Title</h4>
-          <p>TubeEarn Creator</p>
-        </div>
-      </div>
-      <!-- More video cards -->
-    </section>
+    <h1>TubeEarn - India's No.1 Earning Platform</h1>
+    <div class="account">Login / Signup</div>
+  </header>  <div class="sidebar">
+    <h2>📂 Menu</h2>
+    <ul>
+      <li>🎥 Creator Zone
+        <ul>
+          <li>Upload Video</li>
+          <li>Upload Shorts</li>
+          <li>Live Stream</li>
+          <li>Monetization</li>
+        </ul>
+      </li>
+      <li>💘 Dating Section
+        <ul>
+          <li>Match</li>
+          <li>Video Chat</li>
+          <li>Like & Follow</li>
+        </ul>
+      </li>
+      <li>🛒 Shopping Mall
+        <ul>
+          <li>Buyer Account</li>
+          <li>Seller Login</li>
+          <li>Products</li>
+        </ul>
+      </li>
+      <li>🎬 Video Editors
+        <ul>
+          <li>Photo to Video</li>
+          <li>Video to Video</li>
+          <li>Face Camera Effects</li>
+        </ul>
+      </li>
+      <li>🎵 Audio Editor</li>
+      <li>🕹️ Gaming Zone (Coming Soon)</li>
+      <li>📚 Education System</li>
+      <li>💼 Career</li>
+    </ul>
+  </div>  <div class="main">
+    <div class="section">
+      <h3>Welcome to TubeEarn</h3>
+      <p>This is your all-in-one earning platform. Click any section from the left menu to get started.</p>
+    </div>
+    <div class="section">
+      <h3>Live Features</h3>
+      <p>Live streaming, shorts, monetization stats and more – coming soon with real-time updates.</p>
+    </div>
   </div>
 </body>
 </html>
