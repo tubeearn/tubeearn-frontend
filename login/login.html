@@ -3,93 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login - TubeEarn</title>
-  <link rel="stylesheet" href="../index/style.css" />
+  <title>TubeEarn Login</title>
   <style>
     body {
-      background: #eaf8fc;
       font-family: Arial, sans-serif;
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      height: 100vh;
+      background-color: #eaf8fc;
       margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      height: 100vh;
     }
     .login-container {
       background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 25px 30px;
+      margin-top: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       width: 320px;
     }
     .login-container h2 {
-      margin-bottom: 20px;
-      color: #193659;
+      margin: 0 0 20px;
       text-align: center;
+      color: #193659;
     }
-    .login-container input {
+    label {
+      font-weight: bold;
+      font-size: 14px;
+      display: block;
+      margin-bottom: 6px;
+      color: #193659;
+    }
+    input[type="email"],
+    input[type="password"] {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
+      padding: 8px 10px;
+      margin-bottom: 15px;
       border: 1px solid #ccc;
-      font-size: 16px;
+      border-radius: 5px;
+      font-size: 15px;
     }
-    .login-container button {
+    button {
       width: 100%;
-      padding: 12px;
       background-color: #193659;
-      border: none;
       color: white;
       font-size: 16px;
-      border-radius: 5px;
+      padding: 10px 0;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
-      margin-top: 10px;
+      transition: background-color 0.3s ease;
     }
-    .login-container button:hover {
-      background-color: #122c4a;
+    button:hover {
+      background-color: #0f2540;
     }
-    .error-msg {
-      color: red;
+    .links {
+      margin-top: 15px;
+      text-align: center;
       font-size: 14px;
-      margin-top: 5px;
+    }
+    .links a {
+      color: #193659;
+      text-decoration: none;
+      margin: 0 8px;
+      font-weight: 600;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+    #errorMsg {
+      color: red;
+      font-size: 13px;
+      margin-bottom: 12px;
       display: none;
-    }
-    .show-password {
-      display: flex;
-      align-items: center;
-      margin-top: -10px;
-    }
-    .show-password input {
-      margin-right: 5px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
+
   <div class="login-container">
     <h2>Login to TubeEarn</h2>
+    <div id="errorMsg"></div>
+    <label for="email">Email</label>
     <input type="email" id="email" placeholder="Enter your email" required />
+
+    <label for="password">Password</label>
     <input type="password" id="password" placeholder="Enter your password" required />
-    
-    <div class="show-password">
-      <input type="checkbox" id="togglePassword" />
-      <label for="togglePassword">Show Password</label>
-    </div>
-    
-    <div class="error-msg" id="errorMsg">Please fill all fields correctly.</div>
-    
+
     <button onclick="handleLogin()">Login</button>
+
+    <div class="links">
+      <a href="forgot-password.html">Forgot Password?</a> |
+      <a href="../signup/signup.html">Create New Account</a>
+    </div>
   </div>
 
   <script>
-    // Show/hide password toggle
-    document.getElementById('togglePassword').addEventListener('change', function() {
-      const pwd = document.getElementById('password');
-      pwd.type = this.checked ? 'text' : 'password';
-    });
-
-    // Login handler
-    async function handleLogin() {
+    function handleLogin() {
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
       const errorMsg = document.getElementById('errorMsg');
@@ -102,7 +114,6 @@
         return;
       }
 
-      // Simple email regex check
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         errorMsg.textContent = 'Please enter a valid email address.';
@@ -110,30 +121,11 @@
         return;
       }
 
-      // Call your backend API here (replace with your real API URL)
-      try {
-        const response = await fetch('https://your-api-url.com/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          // Successful login logic here
-          alert('Login successful! Welcome, ' + data.username);
-          // Redirect to dashboard or homepage
-          window.location.href = '../index/index.html';
-        } else {
-          // Show error message from backend
-          errorMsg.textContent = data.message || 'Login failed. Try again.';
-          errorMsg.style.display = 'block';
-        }
-      } catch (error) {
-        errorMsg.textContent = 'Network error. Please try again later.';
-        errorMsg.style.display = 'block';
-      }
+      // अभी के लिए fake success alert, असली backend कनेक्ट होने पर इसे बदलना
+      setTimeout(() => {
+        alert('Login successful! Welcome, ' + email);
+        window.location.href = '../index.html';
+      }, 800);
     }
   </script>
 </body>
