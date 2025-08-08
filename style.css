@@ -1,0 +1,194 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #eaf8fc;
+}
+.top-bar {
+  background-color: #193659;
+  color: white;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.logo {
+  display: flex;
+  align-items: center;
+}
+.logo img {
+  height: 50px;
+  width: 50px;
+  object-fit: contain;
+  margin-right: 8px;
+}
+.logo div {
+  font-size: 20px;
+  font-weight: bold;
+}
+.auth-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.auth-buttons a, .auth-buttons button {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.auth-buttons button:hover,
+.auth-buttons a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 10px auto;
+  justify-content: center;
+}
+.search-container input {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 60%;
+}
+.search-container button {
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  background-color: #193659;
+  color: white;
+}
+.marquee {
+  background: Light blue;
+  color: Red & yellow ;
+  padding: 10px;
+  font-weight: bold;
+  overflow: hidden;
+}
+.marquee-content {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scroll-left 15s linear infinite;
+}
+@keyframes scroll-left {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+.button-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+}
+.button-grid a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  background-color: #b2e1e6;
+  color: black;
+  text-decoration: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 15px;
+  min-width: 140px;
+  transition: transform 0.2s ease;
+}
+.button-grid a:hover {
+  transform: scale(1.05);
+  background-color: #a0d8df;
+}
+.stories {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  padding: 15px;
+  background-color: #f5f5f5;
+}
+.story {
+  flex: 0 0 auto;
+  width: 70px;
+  text-align: center;
+  cursor: pointer;
+}
+.story img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid #ff4d4d;
+}
+.story span {
+  font-size: 12px;
+  display: block;
+  margin-top: 5px;
+}
+.shorts, .infinite-scroll {
+  padding: 15px;
+  background-color: #fff;
+}
+.short-video {
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+.short-video img {
+  width: 100%;
+  border-radius: 8px;
+}
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  background-color: #193659;
+  padding: 10px 0;
+}
+.bottom-nav a {
+  color: white;
+  font-size: 14px;
+  text-decoration: none;
+  text-align: center;
+}
+.apk-popup {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  border: 2px solid #193659;
+  padding: 20px;
+  z-index: 999;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  text-align: center;
+  display: none;
+}
+.apk-popup button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: none;
+  background-color: #193659;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+@media (max-width: 600px) {
+  .button-grid a {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
