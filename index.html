@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TubeEarn - Create. Perform. Earn.</title>
+  <link rel="stylesheet" href="index/style.css">
+</head>
+<body>
+  <!-- APK Download Popup -->
+  <div class="apk-popup" id="apkPopup">
+    <p>📲 Download TubeEarn App for a better experience!</p>
+    <a href="https://your-apk-link.com"><button>Download APK</button></a>
+    <br/>
+    <button onclick="closePopup()">Later</button>
+  </div>  
+  <!-- Top Bar -->  
+  <div class="top-bar">
+    <div class="logo">
+      <img src="https://i.postimg.cc/x1pLBPdb/Tube-Earn-logos.png" alt="TubeEarn Logo" />
+      <div>TubeEarn</div>
+    </div>
+    <div class="auth-buttons">
+      <a href="login/login.html">Login</a>
+      <a href="signup/signup.html">Signup</a>
+      <button id="maintenanceBtn" onclick="goMaintenance()" style="display:none;">🛠 Maintenance</button>
+    </div>
+  </div>  
+  <!-- Search Bar -->  
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search anything..." />
+    <button onclick="searchNow()">🔍</button>
+    <button onclick="startVoice()">🎤</button>
+  </div>  
+  <!-- Marquee -->  
+  <div class="marquee">
+    <div class="marquee-content">🔥 Join World’s No.1 Multi-Earning Platform — TubeEarn! 🎥 Creator, 🎮Gaming ,Earning, Shopping,💕 Dating, 🎤 Singing, $ Monetization, 📈 Groth, and Go Viral! 🌟</div>
+  </div>  
+  <!-- Feature Buttons -->  
+  <div class="button-grid">
+    <a href="upcoming/upcoming.html">📢 Upcoming Feature</a>
+    <a href="home/home.html">🏠 Home</a>
+    <a href="creator/creator.html">🎬 Creator</a>
+    <a href="shopping/shopping.html">🛒 Shopping</a>
+    <a href="education/education.html">📚 Education</a>
+    <a href="singing/singing.html">🎤 Singing</a>
+    <a href="dating/dating.html">💖 Dating</a>
+    <a href="gaming/signup.html">🎮 Gaming</a>
+    <a href="live/live.html">📺 Live</a>
+    <a href="face-swipe/face-swipe.html">👨‍👦Face Swaip</a>
+    <a href="video-editor/video-editor.html">🎥video Editor</a>
+    <a href="audio-editor/audio-editor.html">🔊Audio Editor</a>
+    <a href="career/career.html">💼 Career</a>
+    <a href="wallet/wallet.html">💰 Wallet</a>
+    <a href="monetize/monetize.html">$ Monetize</a>
+  </div>  
+  <!-- Stories -->  
+  <div class="stories" id="storiesContainer">
+    <div class="story" onclick="location.href='story1.html'">
+      <img src="https://via.placeholder.com/60" />
+      <span>Raj</span>
+    </div>
+    <div class="story" onclick="location.href='story2.html'">
+      <img src="https://via.placeholder.com/60" />
+      <span>Anjali</span>
+    </div>
+    <div class="story" onclick="location.href='story3.html'">
+      <img src="https://via.placeholder.com/60" />
+      <span>Rohit</span>
+    </div>
+  </div>  
+  <!-- Shorts -->  
+  <div class="shorts" id="shortContainer">
+    <div class="short-video" onclick="location.href='video1.html'">
+      <img src="https://via.placeholder.com/300x500?text=Short+Video+1" />
+    </div>
+    <div class="short-video" onclick="location.href='video2.html'">
+      <img src="https://via.placeholder.com/300x500?text=Short+Video+2" />
+    </div>
+  </div>  
+  <!-- Infinite Scroll Content -->  
+  <div class="infinite-scroll" id="infiniteScroll"></div>  
+  <!-- Bottom Navigation -->  
+  <div class="bottom-nav">
+    <a href="home/home.html">🏠<br/>Home</a>
+    <a href="shorts/shorts.html">▶️<br/>Shorts</a>
+    <a href="upload/upload.html">⬆️<br/>Upload</a>
+    <a href="video/video.html">🎥<br/>Videos</a>
+    <a href="account/account.html">👤<br/>Account</a>
+  </div>  
+
+  <!-- JS Script -->
+  <script>
+    const isOwner = true; // Replace with actual owner check
+    if (isOwner) document.getElementById('maintenanceBtn').style.display = 'inline';
+
+    function closePopup() {
+      document.getElementById('apkPopup').style.display = 'none';
+      localStorage.setItem('apkClosed', 'true');
+    }
+
+    function goMaintenance() {
+      window.location.href = 'maintenance.html';
+    }
+
+    setTimeout(() => {
+      if (!localStorage.getItem('apkClosed')) {
+        document.getElementById('apkPopup').style.display = 'block';
+      }
+    }, 5000);
+
+    function searchNow() {
+      const value = document.getElementById("searchInput").value.trim();
+      if (value !== "") {
+        window.location.href = "search.html?q=" + encodeURIComponent(value);
+      } else {
+        alert("Please enter something to search");
+      }
+    }
+
+    function startVoice() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Voice search not supported in this browser.");
+        return;
+      }
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'en-IN';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById("searchInput").value = transcript;
+        searchNow();
+      };
+      recognition.onerror = function(event) {
+        alert("Mic error: " + event.error);
+      };
+      recognition.start();
+    }
+
+    // Infinite Scroll Video Content
+    window.addEventListener('scroll', () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+        addMoreVideos();
+      }
+    });
+
+    function addMoreVideos() {
+      const container = document.getElementById('infiniteScroll');
+      for (let i = 0; i < 3; i++) {
+        const div = document.createElement('div');
+        div.className = 'short-video';
+        div.innerHTML = `<img src="https://via.placeholder.com/300x500?text=More+Video+${Math.floor(Math.random()*1000)}" />`;
+        container.appendChild(div);
+      }
+    }
+
+    // Story slider auto-scroll on click
+    let storyIndex = 0;
+    document.getElementById('storiesContainer').addEventListener('click', () => {
+      const stories = document.querySelectorAll('.story');
+      storyIndex = (storyIndex + 1) % stories.length;
+      stories[storyIndex].scrollIntoView({behavior: 'smooth', inline: 'center'});
+    });
+
+    // Shorts infinite scroll on first click
+    let shortsClicked = false;
+    document.getElementById('shortContainer').addEventListener('click', () => {
+      if (!shortsClicked) {
+        shortsClicked = true;
+        window.addEventListener('scroll', shortsInfiniteScroll);
+      }
+    });
+
+    function shortsInfiniteScroll() {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+        addMoreVideos();
+      }
+    }
+  </script>
+</body>
+</html>
