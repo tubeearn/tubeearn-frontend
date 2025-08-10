@@ -1,84 +1,101 @@
-import { OTP_API, VERIFY_API, RESET_API } from '../secure/config/configuration.js';
+// forgot-password.js
+// IMPORTANT: adjust relative path below according to your folder structure.
+// If forgot-password.html is in login/ and configure.js is in ../secure/config/, path is:
+import { OTP_API, VERIFY_API, RESET_API } from '../secure/config/configure.js';
 
-const emailInput = document.getElementById('email');
-const otpInput = document.getElementById('otp');
-const newPassInput = document.getElementById('newPass');
-const confirmPassInput = document.getElementById('confirmPass');
-const message = document.getElementById('message');
+const emailEl = document.getElementById('email');
+const otpEl = document.getElementById('otp');
+const newPassEl = document.getElementById('newPass');
+const confirmPassEl = document.getElementById('confirmPass');
+const msgEl = document.getElementById('message');
+
+const stepEmail = document.getElementById('step-email');
+const stepOtp = document.getElementById('step-otp');
+const stepPass = document.getElementById('step-password');
 
 document.getElementById('getOtpBtn').addEventListener('click', async () => {
-  const email = emailInput.value.trim();
-  if (!email) return showMsg('Please enter your registered email', 'error');
+  msgEl.textContent = '';
+  const email = emailEl.value.trim();
+  if (!email) { msgEl.textContent = 'Please enter your registered email.'; return; }
 
   try {
     const res = await fetch(OTP_API, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ email })
     });
     const data = await res.json();
-    if (data.success) {
-      showMsg('OTP sent to your email', 'success');
-      document.getElementById('step-email').classList.add('hidden');
-      document.getElementById('step-otp').classList.remove('hidden');
+    if (res.ok && data.success) {
+      msgEl.style.color = 'green';
+      msgEl.textContent = 'OTP sent to your email.';
+      stepEmail.classList.add('hidden');
+      stepOtp.classList.remove('hidden');
     } else {
-      showMsg(data.message || 'Email not registered', 'error');
+      msgEl.style.color = 'red';
+      msgEl.textContent = data.message || 'Failed to send OTP.';
     }
   } catch (err) {
-    showMsg('Error sending OTP', 'error');
+    msgEl.style.color = 'red';
+    msgEl.textContent = 'Network error. Check backend/CORS and console.';
+    console.error(err);
   }
 });
 
 document.getElementById('verifyOtpBtn').addEventListener('click', async () => {
-  const otp = otpInput.value.trim();
-  const email = emailInput.value.trim();
-  if (!otp) return showMsg('Enter OTP', 'error');
+  msgEl.textContent = '';
+  const email = emailEl.value.trim();
+  const otp = otpEl.value.trim();
+  if (!otp) { msgEl.textContent = 'Enter the OTP.'; return; }
 
   try {
     const res = await fetch(VERIFY_API, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ email, otp })
     });
     const data = await res.json();
-    if (data.success) {
-      showMsg('OTP Verified', 'success');
-      document.getElementById('step-otp').classList.add('hidden');
-      document.getElementById('step-password').classList.remove('hidden');
+    if (res.ok && data.success) {
+      msgEl.style.color = 'green';
+      msgEl.textContent = 'OTP verified. Enter new password.';
+      stepOtp.classList.add('hidden');
+      stepPass.classList.remove('hidden');
     } else {
-      showMsg('Invalid OTP', 'error');
+      msgEl.style.color = 'red';
+      msgEl.textContent = data.message || 'Invalid OTP.';
     }
   } catch (err) {
-    showMsg('Error verifying OTP', 'error');
+    msgEl.style.color = 'red';
+    msgEl.textContent = 'Network error. Check backend and console.';
+    console.error(err);
   }
 });
 
 document.getElementById('resetPassBtn').addEventListener('click', async () => {
-  const newPass = newPassInput.value.trim();
-  const confirmPass = confirmPassInput.value.trim();
-  const email = emailInput.value.trim();
-  if (!newPass || !confirmPass) return showMsg('Fill all password fields', 'error');
-  if (newPass !== confirmPass) return showMsg('Passwords do not match', 'error');
+  msgEl.textContent = '';
+  const email = emailEl.value.trim();
+  const newPass = newPassEl.value.trim();
+  const confirm = confirmPassEl.value.trim();
+  if (!newPass || !confirm) { msgEl.textContent = 'Fill both password fields.'; return; }
+  if (newPass !== confirm) { msgEl.textContent = 'Passwords do not match.'; return; }
 
   try {
     const res = await fetch(RESET_API, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ email, newPassword: newPass })
     });
     const data = await res.json();
-    if (data.success) {
-      showMsg('Password successfully changed. Redirecting to login...', 'success');
-      setTimeout(() => window.location.href = '../login/login.html', 2000);
+    if (res.ok && data.success) {
+      msgEl.style.color = 'green';
+      msgEl.textContent = 'Password changed. Redirecting to login...';
+      setTimeout(()=> location.href = '../login/login.html', 1800);
     } else {
-      showMsg('Password reset failed', 'error');
+      msgEl.style.color = 'red';
+      msgEl.textContent = data.message || 'Password reset failed.';
     }
   } catch (err) {
-    showMsg('Error resetting password', 'error');
+    msgEl.style.color = 'red';
+    msgEl.textContent = 'Network error. Check backend and console.';
+    console.error(err);
   }
 });
-
-function showMsg(msg, type) {
-  message.textContent = msg;
-  message.style.color = type === 'error' ? 'red' : 'lightgreen';
-}
