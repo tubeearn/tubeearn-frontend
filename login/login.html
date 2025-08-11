@@ -3,231 +3,60 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Login - TubeEarn</title>
+<title>Simple Login Test</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #eaf8fc;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding-top: 40px;
-    margin: 0;
-  }
-  .login-container {
-    background: white;
-    padding: 30px 25px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    width: 320px;
-    text-align: center;
-    position: relative;
-  }
-  h2 {
-    margin-bottom: 20px;
-    color: #193659;
-  }
-  input[type="email"], input[type="password"] {
-    width: 100%;
-    padding: 10px 12px;
-    margin: 10px 0 20px 0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    box-sizing: border-box;
-  }
-  button {
-    width: 100%;
-    padding: 12px;
-    background-color: #193659;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  button:hover:not(:disabled) {
-    background-color: #145288;
-  }
-  button:disabled {
-    background-color: #999;
-    cursor: not-allowed;
-  }
-  .links {
-    margin-top: 15px;
-    font-size: 14px;
-  }
-  .links a {
-    color: #193659;
-    text-decoration: none;
-    margin: 0 8px;
-  }
-  .links a:hover {
-    text-decoration: underline;
-  }
-  #errorMsg {
-    color: red;
-    margin-bottom: 10px;
-    min-height: 22px;
-    font-weight: bold;
-    display: none;
-  }
-  #loadingMsg {
-    color: #193659;
-    margin-bottom: 10px;
-    min-height: 22px;
-    font-weight: bold;
-    display: none;
-  }
-  #successPopup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #193659;
-    color: white;
-    padding: 25px 35px;
-    border-radius: 10px;
-    font-size: 18px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    display: none;
-    z-index: 10000;
-    text-align: center;
-  }
+  body { font-family: Arial; padding: 20px; }
+  #errorMsg { color: red; margin-bottom: 10px; }
+  #successMsg { color: green; margin-bottom: 10px; display: none; }
 </style>
 </head>
 <body>
-  <div class="login-container">
-    <h2>Login to TubeEarn</h2>
-    <div id="errorMsg"></div>
-    <div id="loadingMsg">Processing login...</div>
-    <input type="email" id="email" placeholder="Enter your email" autocomplete="username" />
-    <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" />
-    <button id="loginBtn">Login</button>
-    <div class="links">
-      <a href="../login/forgot/forgot-password.html">Forgot Password?</a> |
-      <a href="../signup/signup.html">Create Account</a>
-    </div>
-  </div>
+  <h2>Login Test</h2>
+  <div id="errorMsg"></div>
+  <div id="successMsg">Login successful! Redirecting...</div>
+  
+  <input type="email" id="email" placeholder="Enter email" /><br/><br/>
+  <input type="password" id="password" placeholder="Enter password" /><br/><br/>
+  <button id="loginBtn">Login</button>
 
-  <div id="successPopup">Login successful!<br>Redirecting to your dashboard...</div>
-
-  <script type="module">
-    import config from '../secure/config/configure.js';
-
+  <script>
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
-    const loginBtn = document.getElementById('loginBtn');
     const errorMsg = document.getElementById('errorMsg');
-    const loadingMsg = document.getElementById('loadingMsg');
-    const successPopup = document.getElementById('successPopup');
+    const successMsg = document.getElementById('successMsg');
+    const loginBtn = document.getElementById('loginBtn');
 
-    function showError(message) {
-      errorMsg.textContent = message;
-      errorMsg.style.display = 'block';
-      loadingMsg.style.display = 'none';
-      successPopup.style.display = 'none';
-    }
-
-    function hideError() {
-      errorMsg.style.display = 'none';
+    loginBtn.addEventListener('click', () => {
       errorMsg.textContent = '';
-    }
-
-    function showLoading() {
-      loadingMsg.style.display = 'block';
-      errorMsg.style.display = 'none';
-      successPopup.style.display = 'none';
-    }
-
-    function hideLoading() {
-      loadingMsg.style.display = 'none';
-    }
-
-    function showSuccess() {
-      successPopup.style.display = 'block';
-      errorMsg.style.display = 'none';
-      loadingMsg.style.display = 'none';
-    }
-
-    async function handleLogin() {
-      hideError();
-      hideLoading();
-      successPopup.style.display = 'none';
+      successMsg.style.display = 'none';
 
       const email = emailInput.value.trim();
       const password = passwordInput.value.trim();
 
       if (!email) {
-        showError('Please enter your email.');
+        errorMsg.textContent = 'Please enter your email.';
         return;
       }
       if (!password) {
-        showError('Please enter your password.');
+        errorMsg.textContent = 'Please enter your password.';
         return;
       }
 
+      // Simple email format check
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        showError('Please enter a valid email address.');
+        errorMsg.textContent = 'Please enter a valid email address.';
         return;
       }
 
-      loginBtn.disabled = true;
-      showLoading();
+      // Simulate success
+      successMsg.style.display = 'block';
 
-      try {
-        const response = await fetch(config.apiUrl + '/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${config.apiToken}`
-          },
-          body: JSON.stringify({ email, password }),
-        });
-
-        if (!response.ok) {
-          let msg = 'Login failed. Please try again.';
-          try {
-            const data = await response.json();
-            if (data.message) msg = data.message;
-          } catch {}
-
-          throw new Error(msg);
-        }
-
-        const data = await response.json();
-
-        showSuccess();
-
-        let redirectUrl = '../index.html';
-        if (data.user && data.user.metadata && data.user.metadata.redirectLocation) {
-          redirectUrl = data.user.metadata.redirectLocation;
-        }
-
-        setTimeout(() => {
-          window.location.href = redirectUrl;
-        }, 2000);
-
-      } catch (error) {
-        showError(error.message || 'Network error. Please try again.');
-      } finally {
-        loginBtn.disabled = false;
-        hideLoading();
-      }
-    }
-
-    loginBtn.addEventListener('click', handleLogin);
-
-    [emailInput, passwordInput].forEach(input => {
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          handleLogin();
-        }
-      });
+      // Redirect simulation after 2 sec
+      setTimeout(() => {
+        alert('Redirecting to dashboard...');
+        // window.location.href = 'index.html'; // uncomment when ready
+      }, 2000);
     });
   </script>
 </body>
