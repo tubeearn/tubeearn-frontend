@@ -1,16 +1,16 @@
-// forgot.js
-// यह फाइल API URL को secure/config/configure.js से लेगी
-// मान लिया गया है कि configure.js में एक variable API_BASE मौजूद है
+// forgot.js -> API_BASE को configure.js से लेता है
 
 function sendOTP() {
     let email = document.getElementById("email").value.trim();
     let emailError = document.getElementById("emailError");
+    emailError.innerText = "";
 
     if (!email) {
         emailError.innerText = "Please enter your registered email";
         return;
     }
-    emailError.innerText = "";
+
+    emailError.innerText = "Sending OTP...";
 
     fetch(`${API_BASE}/forgot/send-otp`, {
         method: "POST",
@@ -20,8 +20,10 @@ function sendOTP() {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
+            sessionStorage.setItem("resetEmail", email); // बाद में Reset पेज में यूज़
             document.getElementById("step1").style.display = "none";
             document.getElementById("step2").style.display = "block";
+            emailError.innerText = "";
         } else {
             emailError.innerText = data.message || "Invalid Email";
         }
@@ -30,7 +32,7 @@ function sendOTP() {
 }
 
 function verifyOTP() {
-    let email = document.getElementById("email").value.trim();
+    let email = sessionStorage.getItem("resetEmail");
     let otp = document.getElementById("otp").value.trim();
     let otpError = document.getElementById("otpError");
 
@@ -38,7 +40,7 @@ function verifyOTP() {
         otpError.innerText = "Please enter OTP";
         return;
     }
-    otpError.innerText = "";
+    otpError.innerText = "Verifying OTP...";
 
     fetch(`${API_BASE}/forgot/verify-otp`, {
         method: "POST",
@@ -50,6 +52,7 @@ function verifyOTP() {
         if (data.success) {
             document.getElementById("step2").style.display = "none";
             document.getElementById("step3").style.display = "block";
+            otpError.innerText = "";
         } else {
             otpError.innerText = data.message || "OTP Invalid or Expired";
         }
@@ -58,7 +61,7 @@ function verifyOTP() {
 }
 
 function updatePassword() {
-    let email = document.getElementById("email").value.trim();
+    let email = sessionStorage.getItem("resetEmail");
     let newPass = document.getElementById("newPass").value;
     let confirmPass = document.getElementById("confirmPass").value;
     let passError = document.getElementById("passError");
@@ -73,7 +76,7 @@ function updatePassword() {
         passError.innerText = "Passwords do not match";
         return;
     }
-    passError.innerText = "";
+    passError.innerText = "Updating password...";
 
     fetch(`${API_BASE}/forgot/update-password`, {
         method: "POST",
