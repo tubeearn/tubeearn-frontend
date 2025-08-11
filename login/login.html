@@ -48,10 +48,10 @@
   .error { color: red; }
   .success { color: green; }
 </style>
-<script type="module">
-  import CONFIG from '../secure/config/configure.js';
+<script>
+  // Backend URL डायरेक्ट (Render वाला)
+  const API_BASE_URL = "https://tubeearn-backend.onrender.com";
 
-  // बटन क्लिक फंक्शन
   async function handleLogin(event) {
     event.preventDefault(); // पेज reload रोके
 
@@ -78,11 +78,19 @@
 
     // API कॉल
     try {
-      const res = await fetch(`${CONFIG.API_BASE_URL}/login`, {
+      const res = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
       });
+
+      // नेटवर्क लेवल एरर
+      if (!res.ok) {
+        msgElem.textContent = `Server error: ${res.status}`;
+        msgElem.className = "msg error";
+        return;
+      }
+
       const data = await res.json();
 
       if (data.message === "Login successful") {
@@ -96,14 +104,11 @@
         msgElem.className = "msg error";
       }
     } catch (err) {
-      console.error(err);
+      console.error("Fetch error:", err);
       msgElem.textContent = "Server connection error!";
       msgElem.className = "msg error";
     }
   }
-
-  // फंक्शन विंडो पर अटैच करें
-  window.handleLogin = handleLogin;
 </script>
 </head>
 <body>
