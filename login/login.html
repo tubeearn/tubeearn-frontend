@@ -101,7 +101,7 @@
   <!-- Success Popup -->
   <div id="successPopup">Login successful!<br>Redirecting to your dashboard...</div>
 
-  <!-- Config file load -->
+  <!-- Config file (root से load) -->
   <script src="../configuration.js"></script>
 
   <script>
@@ -112,7 +112,7 @@
       const popup = document.getElementById('successPopup');
       const loginBtn = document.querySelector('button');
 
-      // हर बार क्लिक से पहले error हटा दो और बटन enable कर दो
+      // Reset error & enable button हर बार क्लिक पर
       loginBtn.disabled = false;
       errorMsg.style.display = 'none';
       errorMsg.textContent = '';
@@ -124,7 +124,7 @@
         return;
       }
 
-      // Email format check
+      // Email regex check
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         errorMsg.textContent = 'Please enter a valid email address.';
@@ -133,14 +133,11 @@
       }
 
       try {
-        // एक बार क्लिक पर disable कर देते हैं ताकि डबल क्लिक न हो
-        loginBtn.disabled = true;
+        loginBtn.disabled = true; // double click रोकने के लिए
 
         const response = await fetch(API_BASE + '/login', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
 
@@ -151,6 +148,8 @@
 
         // Success popup
         popup.style.display = 'block';
+
+        // 2 sec बाद root index.html पर redirect
         setTimeout(() => {
           window.location.href = '../index.html';
         }, 2000);
@@ -158,11 +157,10 @@
       } catch (error) {
         errorMsg.textContent = error.message;
         errorMsg.style.display = 'block';
-        loginBtn.disabled = false; // Error पर फिर enable
+        loginBtn.disabled = false; // Error आने पर फिर enable
       }
     }
 
-    // Button onclick के लिए function expose
     window.handleLogin = handleLogin;
   </script>
 </body>
