@@ -1,62 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Simple Login Test</title>
-<style>
-  body { font-family: Arial; padding: 20px; }
-  #errorMsg { color: red; margin-bottom: 10px; }
-  #successMsg { color: green; margin-bottom: 10px; display: none; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - TubeEarn</title>
+
+  <!-- Google Font for better readability -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Reset some default styles */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background: #eaf8fc;
+      margin: 0;
+      padding: 40px 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* A4 paper-like container */
+    .login-container {
+      background: white;
+      width: 210mm; /* A4 width */
+      max-width: 100%;
+      min-height: 297mm; /* A4 height */
+      padding: 40px 60px;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.12);
+      text-align: center;
+      color: #193659;
+      position: relative;
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: 3rem;
+      margin-bottom: 40px;
+      letter-spacing: 0.05em;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 14px 18px;
+      margin-bottom: 30px;
+      border: 1.8px solid #ccc;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      transition: border-color 0.3s ease;
+    }
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #193659;
+      box-shadow: 0 0 6px rgba(25, 54, 89, 0.4);
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      font-size: 1.25rem;
+      background-color: #193659;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-weight: 600;
+    }
+    button:hover:not(:disabled) {
+      background-color: #145288;
+    }
+    button:disabled {
+      background-color: #999;
+      cursor: not-allowed;
+    }
+
+    #errorMsg {
+      color: #b00020;
+      font-weight: 600;
+      margin-bottom: 30px;
+      min-height: 24px;
+      display: none;
+    }
+
+    #loadingMsg {
+      color: #193659;
+      font-weight: 600;
+      margin-bottom: 30px;
+      min-height: 24px;
+      display: none;
+    }
+
+    #successPopup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #193659;
+      color: white;
+      padding: 30px 50px;
+      border-radius: 12px;
+      font-size: 1.5rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      display: none;
+      z-index: 10000;
+      text-align: center;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .links {
+      margin-top: 25px;
+      font-size: 1rem;
+      color: #193659;
+    }
+    .links a {
+      color: #193659;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: 600;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <h2>Login Test</h2>
-  <div id="errorMsg"></div>
-  <div id="successMsg">Login successful! Redirecting...</div>
-  
-  <input type="email" id="email" placeholder="Enter email" /><br/><br/>
-  <input type="password" id="password" placeholder="Enter password" /><br/><br/>
-  <button id="loginBtn">Login</button>
+  <div class="login-container">
+    <h1>Login to TubeEarn</h1>
 
-  <script>
+    <div id="errorMsg"></div>
+    <div id="loadingMsg">Processing login...</div>
+
+    <input type="email" id="email" placeholder="Enter your email" autocomplete="username" />
+    <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" />
+    <button id="loginBtn">Login</button>
+
+    <div class="links">
+      <a href="../login/forgot/forgot-password.html">Forgot Password?</a> |
+      <a href="../signup/signup.html">Create Account</a>
+    </div>
+  </div>
+
+  <div id="successPopup">Login successful!<br>Redirecting to your dashboard...</div>
+
+  <script type="module">
+    import config from '../secure/config/configure.js';
+
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
-    const errorMsg = document.getElementById('errorMsg');
-    const successMsg = document.getElementById('successMsg');
     const loginBtn = document.getElementById('loginBtn');
+    const errorMsg = document.getElementById('errorMsg');
+    const loadingMsg = document.getElementById('loadingMsg');
+    const successPopup = document.getElementById('successPopup');
 
-    loginBtn.addEventListener('click', () => {
+    function showError(message) {
+      errorMsg.textContent = message;
+      errorMsg.style.display = 'block';
+      loadingMsg.style.display = 'none';
+      successPopup.style.display = 'none';
+    }
+
+    function hideError() {
+      errorMsg.style.display = 'none';
       errorMsg.textContent = '';
-      successMsg.style.display = 'none';
+    }
+
+    function showLoading() {
+      loadingMsg.style.display = 'block';
+      errorMsg.style.display = 'none';
+      successPopup.style.display = 'none';
+    }
+
+    function hideLoading() {
+      loadingMsg.style.display = 'none';
+    }
+
+    function showSuccess() {
+      successPopup.style.display = 'block';
+      errorMsg.style.display = 'none';
+      loadingMsg.style.display = 'none';
+    }
+
+    async function handleLogin() {
+      hideError();
+      hideLoading();
+      successPopup.style.display = 'none';
 
       const email = emailInput.value.trim();
       const password = passwordInput.value.trim();
 
       if (!email) {
-        errorMsg.textContent = 'Please enter your email.';
+        showError('Please enter your email.');
         return;
       }
       if (!password) {
-        errorMsg.textContent = 'Please enter your password.';
+        showError('Please enter your password.');
         return;
       }
 
-      // Simple email format check
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        errorMsg.textContent = 'Please enter a valid email address.';
+        showError('Please enter a valid email address.');
         return;
       }
 
-      // Simulate success
-      successMsg.style.display = 'block';
+      loginBtn.disabled = true;
+      showLoading();
 
-      // Redirect simulation after 2 sec
-      setTimeout(() => {
-        alert('Redirecting to dashboard...');
-        // window.location.href = 'index.html'; // uncomment when ready
-      }, 2000);
+      try {
+        const response = await fetch(config.apiUrl + '/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${config.apiToken}`
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) {
+          let msg = 'Login failed. Please try again.';
+          try {
+            const data = await response.json();
+            if (data.message) msg = data.message;
+          } catch {}
+
+          throw new Error(msg);
+        }
+
+        const data = await response.json();
+
+        showSuccess();
+
+        // Redirect to dashboard (index.html) or if user metadata has redirectLocation, use that
+        let redirectUrl = '../index.html';
+        if (data.user && data.user.metadata && data.user.metadata.redirectLocation) {
+          redirectUrl = data.user.metadata.redirectLocation;
+        }
+
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 2000);
+      } catch (error) {
+        showError(error.message || 'Network error. Please try again.');
+      } finally {
+        loginBtn.disabled = false;
+        hideLoading();
+      }
+    }
+
+    loginBtn.addEventListener('click', handleLogin);
+
+    [emailInput, passwordInput].forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleLogin();
+        }
+      });
     });
   </script>
 </body>
