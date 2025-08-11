@@ -12,7 +12,7 @@
     margin: 0; padding: 0;
     display: flex; 
     justify-content: center; 
-    align-items: flex-start; /* TOP aligned */
+    align-items: flex-start;
     height: 100vh;
   }
 
@@ -71,35 +71,49 @@
     color: #2575fc;
     text-decoration: none;
   }
-  .error-msg {
-    color: #d93025;
+
+  .msg {
     margin-top: 10px;
-    font-size: 14px;
+    font-size: 15px;
+    font-weight: bold;
+  }
+  .error {
+    color: #d93025;
+  }
+  .success {
+    color: green;
   }
 </style>
 <script type="module">
-  import CONFIG from './secure/config/configure.js';
+  import CONFIG from '../secure/config/configure.js';
 
   async function handleLogin() {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
-    const errorElem = document.getElementById('error');
+    const msgElem = document.getElementById('msg');
 
-    if(!email && !password) {
-      errorElem.textContent = "Please enter your email and password";
-      return;
-    } 
-    if(!email) {
-      errorElem.textContent = "Please enter your email";
+    // --- Step 1: Validation ---
+    if (!email && !password) {
+      msgElem.textContent = "Please enter your email and password";
+      msgElem.className = "msg error";
       return;
     }
-    if(!password) {
-      errorElem.textContent = "Please enter your password";
+    if (!email) {
+      msgElem.textContent = "Please enter your email";
+      msgElem.className = "msg error";
+      return;
+    }
+    if (!password) {
+      msgElem.textContent = "Please enter your password";
+      msgElem.className = "msg error";
       return;
     }
 
-    errorElem.textContent = "";
+    // --- Step 2: Clear old messages ---
+    msgElem.textContent = "";
+    msgElem.className = "msg";
 
+    // --- Step 3: Backend API Call ---
     try {
       const res = await fetch(`${CONFIG.API_BASE_URL}/login`, {
         method: "POST",
@@ -107,14 +121,21 @@
         body: JSON.stringify({ email, password })
       });
       const data = await res.json();
-      if(data.message === "Login successful") {
-        // लॉगिन के बाद रूट index.html पर रीडायरेक्ट
-        window.location.href = "/index.html";
+
+      // --- Step 4: Check API Response ---
+      if (data.message === "Login successful") {
+        msgElem.textContent = "Login Successfully. Redirecting to your dashboard…";
+        msgElem.className = "msg success";
+        setTimeout(() => {
+          window.location.href = "/index.html";
+        }, 2000); // 2 सेकंड बाद रीडायरेक्ट
       } else {
-        errorElem.textContent = data.message;
+        msgElem.textContent = data.message || "Invalid login credentials";
+        msgElem.className = "msg error";
       }
-    } catch(e) {
-      errorElem.textContent = "Server connection error!";
+    } catch (e) {
+      msgElem.textContent = "Server connection error!";
+      msgElem.className = "msg error";
     }
   }
 
@@ -131,11 +152,13 @@
     
     <button class="btn-login" onclick="handleLogin()">Login</button>
 
-    <p id="error" class="error-msg"></p>
+    <p id="msg" class="msg"></p>
 
     <div class="links">
-      <!-- Forgot password का नया पाथ -->
       <a href="login/forgot/forget.html">Forgot Password?</a>
-      <!-- Signup का नया पाथ -->
       <a href="signup/signup.html">Create Account</a>
     </div>
+  </div>
+
+</body>
+</html>
