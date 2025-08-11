@@ -1,133 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Welcome to TubeEarn - Login</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T1 - Login</title>
 <style>
   body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #6a11cb, #2575fc);
-    margin: 0; padding: 0;
+    margin: 0;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     height: 100vh;
   }
   .container {
-    background: white;
-    color: #333;
-    width: 400px;
+    background: #fff;
     padding: 30px 40px;
+    margin-top: 50px;
     border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    margin-top: 40px;
+    width: 350px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
     text-align: center;
   }
-  h1 { margin-bottom: 20px; color: #2575fc; }
+  h1 { color: #2575fc; margin-bottom: 20px; }
   input {
     width: 100%;
-    padding: 14px 12px;
-    margin: 12px 0;
+    padding: 12px;
+    margin: 8px 0;
     border: 1.5px solid #2575fc;
     border-radius: 6px;
     font-size: 16px;
   }
   input:focus { border-color: #6a11cb; outline: none; }
-  .btn-login {
-    background: #2575fc; color: white;
-    border: none; padding: 14px; width: 100%;
-    font-weight: bold; font-size: 18px;
-    margin-top: 10px; border-radius: 6px;
+  .btn {
+    background: #2575fc;
+    color: #fff;
+    padding: 14px;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    margin-top: 10px;
     cursor: pointer;
   }
-  .btn-login:hover { background: #6a11cb; }
-  .links { margin-top: 18px; display: flex; justify-content: space-between; font-size: 14px; }
-  .links a { color: #2575fc; text-decoration: none; }
+  .btn:hover { background: #6a11cb; }
   .msg { margin-top: 10px; font-weight: bold; }
   .error { color: red; }
   .success { color: green; }
+  .links { margin-top: 12px; font-size: 14px; }
+  .links a { text-decoration: none; color: #2575fc; }
 </style>
-<script>
-  // Backend URL डायरेक्ट (Render वाला)
-  const API_BASE_URL = "https://tubeearn-backend.onrender.com";
+
+<script type="module">
+  import CONFIG from '../secure/config/configure.js'; // <- सही path
 
   async function handleLogin(event) {
-    event.preventDefault(); // पेज reload रोके
+    event.preventDefault();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const msgElem = document.getElementById("msg");
 
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const msgElem = document.getElementById('msg');
-
-    // वैलिडेशन
-    if (!email && !password) {
+    if (!email || !password) {
       msgElem.textContent = "Please enter your email and password";
       msgElem.className = "msg error";
       return;
     }
-    if (!email) {
-      msgElem.textContent = "Please enter your email";
-      msgElem.className = "msg error";
-      return;
-    }
-    if (!password) {
-      msgElem.textContent = "Please enter your password";
-      msgElem.className = "msg error";
-      return;
-    }
 
-    // API कॉल
     try {
-      const res = await fetch(`${API_BASE_URL}/login`, {
+      const res = await fetch(`${CONFIG.API_BASE_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
       });
 
-      // नेटवर्क लेवल एरर
-      if (!res.ok) {
-        msgElem.textContent = `Server error: ${res.status}`;
-        msgElem.className = "msg error";
-        return;
-      }
-
       const data = await res.json();
-
-      if (data.message === "Login successful") {
-        msgElem.textContent = "Login Successfully. Redirecting to your dashboard…";
+      if (data.message && data.message.toLowerCase().includes("successful")) {
+        msgElem.textContent = "Your login successfully!";
         msgElem.className = "msg success";
         setTimeout(() => {
           window.location.href = "/index.html";
-        }, 2000);
+        }, 1500);
       } else {
         msgElem.textContent = data.message || "Invalid credentials";
         msgElem.className = "msg error";
       }
     } catch (err) {
-      console.error("Fetch error:", err);
+      console.error(err);
       msgElem.textContent = "Server connection error!";
       msgElem.className = "msg error";
     }
   }
+
+  window.handleLogin = handleLogin;
 </script>
 </head>
 <body>
-
   <div class="container">
-    <h1>Welcome to TubeEarn</h1>
+    <h1>Welcome to T1</h1>
     <form>
-      <input type="email" id="email" placeholder="Enter your email" />
-      <input type="password" id="password" placeholder="Enter your password" />
-      <button class="btn-login" onclick="handleLogin(event)">Login</button>
+      <input type="email" id="email" placeholder="Enter your email">
+      <input type="password" id="password" placeholder="Enter your password">
+      <button class="btn" onclick="handleLogin(event)">Login</button>
     </form>
-
     <p id="msg" class="msg"></p>
-
     <div class="links">
-      <a href="login/forgot/forget.html">Forgot Password?</a>
-      <a href="signup/signup.html">Create Account</a>
+      <a href="../forgot-password.html">Forgot Password?</a>
     </div>
   </div>
-
 </body>
 </html>
