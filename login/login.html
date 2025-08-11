@@ -8,14 +8,12 @@
   body {
     font-family: 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, #6a11cb, #2575fc);
-    color: #fff;
     margin: 0; padding: 0;
-    display: flex; 
-    justify-content: center; 
+    display: flex;
+    justify-content: center;
     align-items: flex-start;
     height: 100vh;
   }
-
   .container {
     background: white;
     color: #333;
@@ -26,73 +24,42 @@
     margin-top: 40px;
     text-align: center;
   }
-
-  h1 {
-    margin-bottom: 20px;
-    color: #2575fc;
-  }
-
-  input[type="email"], input[type="password"] {
+  h1 { margin-bottom: 20px; color: #2575fc; }
+  input {
     width: 100%;
     padding: 14px 12px;
-    margin: 12px 0 20px 0;
+    margin: 12px 0;
     border: 1.5px solid #2575fc;
     border-radius: 6px;
     font-size: 16px;
   }
-  input:focus {
-    border-color: #6a11cb;
-    outline: none;
-  }
-
+  input:focus { border-color: #6a11cb; outline: none; }
   .btn-login {
-    background: #2575fc;
-    color: white;
-    border: none;
-    padding: 14px;
-    width: 100%;
-    font-weight: bold;
-    font-size: 18px;
-    margin-top: 10px;
-    border-radius: 6px;
+    background: #2575fc; color: white;
+    border: none; padding: 14px; width: 100%;
+    font-weight: bold; font-size: 18px;
+    margin-top: 10px; border-radius: 6px;
     cursor: pointer;
   }
-  .btn-login:hover {
-    background: #6a11cb;
-  }
-
-  .links {
-    margin-top: 18px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-  }
-  .links a {
-    color: #2575fc;
-    text-decoration: none;
-  }
-
-  .msg {
-    margin-top: 10px;
-    font-size: 15px;
-    font-weight: bold;
-  }
-  .error {
-    color: #d93025;
-  }
-  .success {
-    color: green;
-  }
+  .btn-login:hover { background: #6a11cb; }
+  .links { margin-top: 18px; display: flex; justify-content: space-between; font-size: 14px; }
+  .links a { color: #2575fc; text-decoration: none; }
+  .msg { margin-top: 10px; font-weight: bold; }
+  .error { color: red; }
+  .success { color: green; }
 </style>
 <script type="module">
-  import CONFIG from '../secure/config/configure.js';
+  import CONFIG from './secure/config/configure.js';
 
-  async function handleLogin() {
+  // बटन क्लिक फंक्शन
+  async function handleLogin(event) {
+    event.preventDefault(); // पेज reload रोके
+
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
     const msgElem = document.getElementById('msg');
 
-    // --- Step 1: Validation ---
+    // वैलिडेशन
     if (!email && !password) {
       msgElem.textContent = "Please enter your email and password";
       msgElem.className = "msg error";
@@ -109,11 +76,7 @@
       return;
     }
 
-    // --- Step 2: Clear old messages ---
-    msgElem.textContent = "";
-    msgElem.className = "msg";
-
-    // --- Step 3: Backend API Call ---
+    // API कॉल
     try {
       const res = await fetch(`${CONFIG.API_BASE_URL}/login`, {
         method: "POST",
@@ -122,23 +85,24 @@
       });
       const data = await res.json();
 
-      // --- Step 4: Check API Response ---
       if (data.message === "Login successful") {
         msgElem.textContent = "Login Successfully. Redirecting to your dashboard…";
         msgElem.className = "msg success";
         setTimeout(() => {
           window.location.href = "/index.html";
-        }, 2000); // 2 सेकंड बाद रीडायरेक्ट
+        }, 2000);
       } else {
-        msgElem.textContent = data.message || "Invalid login credentials";
+        msgElem.textContent = data.message || "Invalid credentials";
         msgElem.className = "msg error";
       }
-    } catch (e) {
+    } catch (err) {
+      console.error(err);
       msgElem.textContent = "Server connection error!";
       msgElem.className = "msg error";
     }
   }
 
+  // फंक्शन विंडो पर अटैच करें
   window.handleLogin = handleLogin;
 </script>
 </head>
@@ -146,11 +110,11 @@
 
   <div class="container">
     <h1>Welcome to TubeEarn</h1>
-
-    <input type="email" id="email" placeholder="Enter your email" />
-    <input type="password" id="password" placeholder="Enter your password" />
-    
-    <button class="btn-login" onclick="handleLogin()">Login</button>
+    <form>
+      <input type="email" id="email" placeholder="Enter your email" />
+      <input type="password" id="password" placeholder="Enter your password" />
+      <button class="btn-login" onclick="handleLogin(event)">Login</button>
+    </form>
 
     <p id="msg" class="msg"></p>
 
