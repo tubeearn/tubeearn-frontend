@@ -1,4 +1,4 @@
-export default {
-  apiUrl: 'https://tubeearn-backend.onrender.com',
-  apiToken: '', // अगर कोई API token चाहिए तो यहाँ डालो, नहीं तो खाली छोड़ दो
+const CONFIG = {
+    API_BASE_URL: "https://tubeearn-backend.onrender.com"
 };
+export default CONFIG;
