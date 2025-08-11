@@ -93,7 +93,7 @@
     <input type="password" id="password" placeholder="Enter your password" />
     <button onclick="handleLogin()">Login</button>
     <div class="links">
-      <a href="../login/forgot-password.html">Forgot Password?</a> |
+      <a href="../login/forgot/forgot-password.html">Forgot Password?</a> |
       <a href="../signup/signup.html">Create Account</a>
     </div>
   </div>
@@ -101,8 +101,8 @@
   <!-- Success Popup -->
   <div id="successPopup">Login successful!<br>Redirecting to your dashboard...</div>
 
-  <!-- Root config load -->
-  <script src="../secure/config/configure.js"></script>
+  <!-- Config file load -->
+  <script src="../configuration.js"></script>
 
   <script>
     async function handleLogin() {
@@ -110,24 +110,16 @@
       const password = document.getElementById('password').value.trim();
       const errorMsg = document.getElementById('errorMsg');
       const popup = document.getElementById('successPopup');
+      const loginBtn = document.querySelector('button');
 
-      // पहले error clear करो
+      // हर बार क्लिक से पहले error हटा दो और बटन enable कर दो
+      loginBtn.disabled = false;
       errorMsg.style.display = 'none';
       errorMsg.textContent = '';
 
-      // Empty fields check
-      if (!email && !password) {
-        errorMsg.textContent = 'Please enter email and password.';
-        errorMsg.style.display = 'block';
-        return;
-      }
-      if (!email) {
-        errorMsg.textContent = 'Please enter email.';
-        errorMsg.style.display = 'block';
-        return;
-      }
-      if (!password) {
-        errorMsg.textContent = 'Please enter password.';
+      // Empty check
+      if (!email || !password) {
+        errorMsg.textContent = 'Please enter both email and password.';
         errorMsg.style.display = 'block';
         return;
       }
@@ -141,10 +133,14 @@
       }
 
       try {
-        // Backend login API call
+        // एक बार क्लिक पर disable कर देते हैं ताकि डबल क्लिक न हो
+        loginBtn.disabled = true;
+
         const response = await fetch(API_BASE + '/login', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({ email, password })
         });
 
@@ -153,7 +149,7 @@
           throw new Error(data.message || 'Login failed. Please try again.');
         }
 
-        // Show success popup
+        // Success popup
         popup.style.display = 'block';
         setTimeout(() => {
           window.location.href = '../index.html';
@@ -162,10 +158,11 @@
       } catch (error) {
         errorMsg.textContent = error.message;
         errorMsg.style.display = 'block';
+        loginBtn.disabled = false; // Error पर फिर enable
       }
     }
 
-    // Button के लिए function expose
+    // Button onclick के लिए function expose
     window.handleLogin = handleLogin;
   </script>
 </body>
