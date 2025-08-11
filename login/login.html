@@ -48,8 +48,12 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-    button:hover {
+    button:hover:not(:disabled) {
       background-color: #145288;
+    }
+    button:disabled {
+      background-color: #999;
+      cursor: not-allowed;
     }
     .links {
       margin-top: 15px;
@@ -67,6 +71,7 @@
       color: red;
       margin-bottom: 10px;
       display: none;
+      min-height: 18px;
     }
     /* Popup styling */
     #successPopup {
@@ -92,7 +97,7 @@
     <div id="errorMsg"></div>
     <input type="email" id="email" placeholder="Enter your email" required />
     <input type="password" id="password" placeholder="Enter your password" required />
-    <button onclick="handleLogin()">Login</button>
+    <button id="loginBtn" onclick="handleLogin()">Login</button>
     <div class="links">
       <a href="../login/forgot/forgot-password.html">Forgot Password?</a> |
       <a href="../signup/signup.html">Create Account</a>
@@ -102,17 +107,19 @@
   <!-- Success Popup -->
   <div id="successPopup">Login successful!<br>Redirecting to your dashboard...</div>
 
-  <!-- अब configure.js से import करके यूज करेंगे -->
   <script type="module">
     import config from '../secure/config/configure.js';
 
+    const loginBtn = document.getElementById('loginBtn');
+    const errorMsg = document.getElementById('errorMsg');
+    const popup = document.getElementById('successPopup');
+
     async function handleLogin() {
+      errorMsg.style.display = 'none';
+      errorMsg.textContent = '';
+      
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
-      const errorMsg = document.getElementById('errorMsg');
-      const popup = document.getElementById('successPopup');
-
-      errorMsg.style.display = 'none';
 
       if (!email || !password) {
         errorMsg.textContent = 'Please enter both email and password.';
@@ -127,6 +134,10 @@
         return;
       }
 
+      // Disable button while processing
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Logging in...';
+
       try {
         const response = await fetch(config.apiUrl + '/login', {
           method: 'POST',
@@ -134,26 +145,46 @@
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${config.apiToken}`
           },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({ email, password }),
+          timeout: 10000 // timeout not native to fetch, we can implement if needed
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Login failed. Please try again.');
+          let errorText = 'Login failed. Please try again.';
+          try {
+            const errorData = await response.json();
+            if (errorData && errorData.message) {
+              errorText = errorData.message;
+            }
+          } catch {
+            // ignore json parse error
+          }
+          throw new Error(errorText);
         }
 
+        const data = await response.json();
+
+        // Show success popup
         popup.style.display = 'block';
 
+        // Clear error if any
+        errorMsg.style.display = 'none';
+        errorMsg.textContent = '';
+
+        // Wait 2 seconds then redirect
         setTimeout(() => {
-          window.location.href = '../index.html'; // Redirect to dashboard/main page
+          window.location.href = '../index.html';
         }, 2000);
       } catch (error) {
-        errorMsg.textContent = error.message;
+        errorMsg.textContent = error.message || 'Network error, please try again.';
         errorMsg.style.display = 'block';
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Login';
       }
     }
 
-    window.handleLogin = handleLogin;  // button onclick के लिए expose करना ज़रूरी है
+    window.handleLogin = handleLogin; // expose for onclick
   </script>
 </body>
 </html>
