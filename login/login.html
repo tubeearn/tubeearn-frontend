@@ -1,282 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login - TubeEarn</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Welcome to TubeEarn - Login</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #fff;
+    margin: 0; padding: 0;
+    display: flex; 
+    justify-content: center; 
+    align-items: flex-start; /* TOP aligned */
+    height: 100vh;
+  }
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+  .container {
+    background: white;
+    color: #333;
+    width: 400px;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    margin-top: 40px;
+    text-align: center;
+  }
 
-  <style>
-    * {
-      box-sizing: border-box;
+  h1 {
+    margin-bottom: 20px;
+    color: #2575fc;
+  }
+
+  input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 14px 12px;
+    margin: 12px 0 20px 0;
+    border: 1.5px solid #2575fc;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+  input:focus {
+    border-color: #6a11cb;
+    outline: none;
+  }
+
+  .btn-login {
+    background: #2575fc;
+    color: white;
+    border: none;
+    padding: 14px;
+    width: 100%;
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .btn-login:hover {
+    background: #6a11cb;
+  }
+
+  .links {
+    margin-top: 18px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+  .links a {
+    color: #2575fc;
+    text-decoration: none;
+  }
+  .error-msg {
+    color: #d93025;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+</style>
+<script type="module">
+  import CONFIG from './secure/config/configure.js';
+
+  async function handleLogin() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const errorElem = document.getElementById('error');
+
+    if(!email && !password) {
+      errorElem.textContent = "Please enter your email and password";
+      return;
+    } 
+    if(!email) {
+      errorElem.textContent = "Please enter your email";
+      return;
     }
-    body {
-      font-family: 'Inter', Arial, sans-serif;
-      background: #eaf8fc;
-      margin: 0;
-      padding: 40px 10px;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
-    .login-container {
-      background: white;
-      width: 400px;
-      max-width: 100%;
-      padding: 40px 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.12);
-      text-align: center;
-      color: #193659;
-      position: relative;
-    }
-    h1 {
-      font-weight: 700;
-      font-size: 2.5rem;
-      margin-bottom: 40px;
-      letter-spacing: 0.05em;
-    }
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 14px 18px;
-      margin-bottom: 25px;
-      border: 1.8px solid #ccc;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      transition: border-color 0.3s ease;
-    }
-    input[type="email"]:focus,
-    input[type="password"]:focus {
-      outline: none;
-      border-color: #193659;
-      box-shadow: 0 0 6px rgba(25, 54, 89, 0.4);
-    }
-    button {
-      width: 100%;
-      padding: 16px;
-      font-size: 1.2rem;
-      background-color: #193659;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      font-weight: 600;
-    }
-    button:hover:not(:disabled) {
-      background-color: #145288;
-    }
-    button:disabled {
-      background-color: #999;
-      cursor: not-allowed;
-    }
-    #errorMsg {
-      color: #b00020;
-      font-weight: 600;
-      margin-bottom: 25px;
-      min-height: 24px;
-      display: none;
-    }
-    #loadingMsg {
-      color: #193659;
-      font-weight: 600;
-      margin-bottom: 25px;
-      min-height: 24px;
-      display: none;
-    }
-    #successPopup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #193659;
-      color: white;
-      padding: 30px 50px;
-      border-radius: 12px;
-      font-size: 1.5rem;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
-      display: none;
-      z-index: 10000;
-      text-align: center;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-    }
-    .links {
-      margin-top: 25px;
-      font-size: 1rem;
-      color: #193659;
-    }
-    .links a {
-      color: #193659;
-      text-decoration: none;
-      margin: 0 10px;
-      font-weight: 600;
-    }
-    .links a:hover {
-      text-decoration: underline;
+    if(!password) {
+      errorElem.textContent = "Please enter your password";
+      return;
     }
 
-    /* Responsive adjustments */
-    @media (max-width: 480px) {
-      .login-container {
-        width: 90%;
-        padding: 30px 20px;
+    errorElem.textContent = "";
+
+    try {
+      const res = await fetch(`${CONFIG.API_BASE_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if(data.message === "Login successful") {
+        // लॉगिन के बाद रूट index.html पर रीडायरेक्ट
+        window.location.href = "/index.html";
+      } else {
+        errorElem.textContent = data.message;
       }
-      h1 {
-        font-size: 2rem;
-        margin-bottom: 30px;
-      }
-      input[type="email"],
-      input[type="password"] {
-        font-size: 1rem;
-        padding: 12px 14px;
-        margin-bottom: 20px;
-      }
-      button {
-        font-size: 1.1rem;
-        padding: 14px;
-      }
+    } catch(e) {
+      errorElem.textContent = "Server connection error!";
     }
-  </style>
+  }
+
+  window.handleLogin = handleLogin;
+</script>
 </head>
 <body>
-  <div class="login-container">
-    <h1>Login to TubeEarn</h1>
 
-    <div id="errorMsg"></div>
-    <div id="loadingMsg">Processing login...</div>
+  <div class="container">
+    <h1>Welcome to TubeEarn</h1>
 
-    <input type="email" id="email" placeholder="Enter your email" autocomplete="username" />
-    <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" />
-    <button id="loginBtn">Login</button>
+    <input type="email" id="email" placeholder="Enter your email" />
+    <input type="password" id="password" placeholder="Enter your password" />
+    
+    <button class="btn-login" onclick="handleLogin()">Login</button>
+
+    <p id="error" class="error-msg"></p>
 
     <div class="links">
-      <a href="../login/forgot/forgot-password.html">Forgot Password?</a> |
-      <a href="../signup/signup.html">Create Account</a>
+      <!-- Forgot password का नया पाथ -->
+      <a href="login/forgot/forget.html">Forgot Password?</a>
+      <!-- Signup का नया पाथ -->
+      <a href="signup/signup.html">Create Account</a>
     </div>
-  </div>
-
-  <div id="successPopup">Login successful!<br>Redirecting to your dashboard...</div>
-
-  <script type="module">
-    import config from '../secure/config/configure.js';
-
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const loginBtn = document.getElementById('loginBtn');
-    const errorMsg = document.getElementById('errorMsg');
-    const loadingMsg = document.getElementById('loadingMsg');
-    const successPopup = document.getElementById('successPopup');
-
-    function showError(message) {
-      errorMsg.textContent = message;
-      errorMsg.style.display = 'block';
-      loadingMsg.style.display = 'none';
-      successPopup.style.display = 'none';
-    }
-
-    function hideError() {
-      errorMsg.style.display = 'none';
-      errorMsg.textContent = '';
-    }
-
-    function showLoading() {
-      loadingMsg.style.display = 'block';
-      errorMsg.style.display = 'none';
-      successPopup.style.display = 'none';
-    }
-
-    function hideLoading() {
-      loadingMsg.style.display = 'none';
-    }
-
-    function showSuccess() {
-      successPopup.style.display = 'block';
-      errorMsg.style.display = 'none';
-      loadingMsg.style.display = 'none';
-    }
-
-    async function handleLogin() {
-      hideError();
-      hideLoading();
-      successPopup.style.display = 'none';
-
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
-
-      if (!email) {
-        showError('Please enter your email.');
-        return;
-      }
-      if (!password) {
-        showError('Please enter your password.');
-        return;
-      }
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        showError('Please enter a valid email address.');
-        return;
-      }
-
-      loginBtn.disabled = true;
-      showLoading();
-
-      try {
-        const response = await fetch(config.apiUrl + '/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${config.apiToken}`
-          },
-          body: JSON.stringify({ email, password }),
-        });
-
-        if (!response.ok) {
-          let msg = 'Login failed. Please try again.';
-          try {
-            const data = await response.json();
-            if (data.message) msg = data.message;
-          } catch {}
-
-          throw new Error(msg);
-        }
-
-        const data = await response.json();
-
-        showSuccess();
-
-        // Redirect to dashboard or user metadata redirect location
-        let redirectUrl = '../index.html';
-        if (data.user && data.user.metadata && data.user.metadata.redirectLocation) {
-          redirectUrl = data.user.metadata.redirectLocation;
-        }
-
-        setTimeout(() => {
-          window.location.href = redirectUrl;
-        }, 2000);
-      } catch (error) {
-        showError(error.message || 'Network error. Please try again.');
-      } finally {
-        loginBtn.disabled = false;
-        hideLoading();
-      }
-    }
-
-    loginBtn.addEventListener('click', handleLogin);
-
-    [emailInput, passwordInput].forEach(input => {
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          handleLogin();
-        }
-      });
-    });
-  </script>
-</body>
-</html>
