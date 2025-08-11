@@ -1,165 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login - TubeEarn</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #eaf8fc;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding-top: 40px;
-      margin: 0;
-    }
-    .login-container {
-      background: white;
-      padding: 30px 25px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      width: 320px;
-      text-align: center;
-      position: relative;
-    }
-    h2 {
-      margin-bottom: 20px;
-      color: #193659;
-    }
-    input[type="email"], input[type="password"] {
-      width: 100%;
-      padding: 10px 12px;
-      margin: 10px 0 20px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #193659;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    button:hover:not(:disabled) {
-      background-color: #145288;
-    }
-    button:disabled {
-      background-color: #999;
-      cursor: not-allowed;
-    }
-    .links {
-      margin-top: 15px;
-      font-size: 14px;
-    }
-    .links a {
-      color: #193659;
-      text-decoration: none;
-      margin: 0 8px;
-    }
-    .links a:hover {
-      text-decoration: underline;
-    }
-    #errorMsg {
-      color: red;
-      margin-bottom: 10px;
-      min-height: 18px;
-      display: none;
-      font-weight: bold;
-    }
-    #loadingMsg {
-      color: #193659;
-      margin-bottom: 10px;
-      min-height: 18px;
-      display: none;
-      font-weight: bold;
-    }
-    /* Popup styling */
-    #successPopup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #193659;
-      color: white;
-      padding: 25px 35px;
-      border-radius: 10px;
-      font-size: 18px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-      display: none;
-      z-index: 10000;
-      text-align: center;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Login - TubeEarn</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #eaf8fc;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding-top: 40px;
+    margin: 0;
+  }
+  .login-container {
+    background: white;
+    padding: 30px 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    width: 320px;
+    text-align: center;
+    position: relative;
+  }
+  h2 {
+    margin-bottom: 20px;
+    color: #193659;
+  }
+  input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin: 10px 0 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  button {
+    width: 100%;
+    padding: 12px;
+    background-color: #193659;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover:not(:disabled) {
+    background-color: #145288;
+  }
+  button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+  }
+  .links {
+    margin-top: 15px;
+    font-size: 14px;
+  }
+  .links a {
+    color: #193659;
+    text-decoration: none;
+    margin: 0 8px;
+  }
+  .links a:hover {
+    text-decoration: underline;
+  }
+  #errorMsg {
+    color: red;
+    margin-bottom: 10px;
+    min-height: 20px;
+    font-weight: bold;
+    display: none;
+  }
+  #loadingMsg {
+    color: #193659;
+    margin-bottom: 10px;
+    min-height: 20px;
+    font-weight: bold;
+    display: none;
+  }
+  #successPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #193659;
+    color: white;
+    padding: 25px 35px;
+    border-radius: 10px;
+    font-size: 18px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    display: none;
+    z-index: 10000;
+    text-align: center;
+  }
+</style>
 </head>
 <body>
   <div class="login-container">
     <h2>Login to TubeEarn</h2>
     <div id="errorMsg"></div>
     <div id="loadingMsg">Processing login...</div>
-    <input type="email" id="email" placeholder="Enter your email" required autocomplete="username" />
-    <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password" />
-    <button id="loginBtn" onclick="handleLogin()">Login</button>
+    <input type="email" id="email" placeholder="Enter your email" autocomplete="username" />
+    <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" />
+    <button id="loginBtn">Login</button>
     <div class="links">
       <a href="../login/forgot/forgot-password.html">Forgot Password?</a> |
       <a href="../signup/signup.html">Create Account</a>
     </div>
   </div>
 
-  <!-- Success Popup -->
   <div id="successPopup">Login successful!<br>Redirecting to your dashboard...</div>
 
   <script type="module">
+    // --------- यहाँ config ठीक से import करना ---------
     import config from '../secure/config/configure.js';
 
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
     const loginBtn = document.getElementById('loginBtn');
     const errorMsg = document.getElementById('errorMsg');
     const loadingMsg = document.getElementById('loadingMsg');
-    const popup = document.getElementById('successPopup');
+    const successPopup = document.getElementById('successPopup');
 
     function showError(message) {
       errorMsg.textContent = message;
       errorMsg.style.display = 'block';
       loadingMsg.style.display = 'none';
+      successPopup.style.display = 'none';
     }
+
     function hideError() {
       errorMsg.style.display = 'none';
       errorMsg.textContent = '';
     }
+
     function showLoading() {
       loadingMsg.style.display = 'block';
+      errorMsg.style.display = 'none';
+      successPopup.style.display = 'none';
     }
+
     function hideLoading() {
+      loadingMsg.style.display = 'none';
+    }
+
+    function showSuccess() {
+      successPopup.style.display = 'block';
+      errorMsg.style.display = 'none';
       loadingMsg.style.display = 'none';
     }
 
     async function handleLogin() {
       hideError();
       hideLoading();
+      successPopup.style.display = 'none';
 
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
 
-      if (!email || !password) {
-        showError('Please enter both email and password.');
+      if (!email) {
+        showError('Please enter your email.');
+        return;
+      }
+      if (!password) {
+        showError('Please enter your password.');
         return;
       }
 
-      // Email format check
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         showError('Please enter a valid email address.');
         return;
       }
 
-      // Disable button & show loading
       loginBtn.disabled = true;
       showLoading();
 
@@ -174,26 +190,19 @@
         });
 
         if (!response.ok) {
-          let errorText = 'Login failed. Please try again.';
+          let msg = 'Login failed. Please try again.';
           try {
-            const errorData = await response.json();
-            if (errorData && errorData.message) {
-              errorText = errorData.message;
-            }
-          } catch { /* ignore json parse errors */ }
-          throw new Error(errorText);
+            const data = await response.json();
+            if (data.message) msg = data.message;
+          } catch {}
+
+          throw new Error(msg);
         }
 
         const data = await response.json();
 
-        // Hide errors and loading
-        hideError();
-        hideLoading();
+        showSuccess();
 
-        // Show success popup
-        popup.style.display = 'block';
-
-        // Redirect to user’s saved location if available, else default to index.html
         let redirectUrl = '../index.html';
         if (data.user && data.user.metadata && data.user.metadata.redirectLocation) {
           redirectUrl = data.user.metadata.redirectLocation;
@@ -202,15 +211,25 @@
         setTimeout(() => {
           window.location.href = redirectUrl;
         }, 2000);
+
       } catch (error) {
-        hideLoading();
-        showError(error.message || 'Network error, please try again.');
+        showError(error.message || 'Network error. Please try again.');
       } finally {
         loginBtn.disabled = false;
+        hideLoading();
       }
     }
 
-    window.handleLogin = handleLogin;
+    loginBtn.addEventListener('click', handleLogin);
+
+    [emailInput, passwordInput].forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleLogin();
+        }
+      });
+    });
   </script>
 </body>
 </html>
