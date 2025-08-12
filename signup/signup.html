@@ -113,10 +113,10 @@
         const lowerMsg = data.message.toLowerCase();
 
         if (lowerMsg.includes("already") || lowerMsg.includes("exists")) {
-          msgElem.textContent = "Your account is already created. Please login.";
+          msgElem.textContent = "Your account already exists. Please login.";
           msgElem.className = "msg error";
         } 
-        else if (lowerMsg.includes("successful")) {
+        else if (lowerMsg.includes("success")) {
           msgElem.textContent = "Your account has been successfully created. Please check your email for the confirmation link.";
           msgElem.className = "msg success";
           setTimeout(() => {
