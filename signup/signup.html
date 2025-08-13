@@ -1,143 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Signup - TubeEarn</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    height: 100vh;
-  }
-  .container {
-    background: #fff;
-    padding: 30px 40px;
-    margin-top: 30px;
-    border-radius: 10px;
-    width: 380px;
-    box-shadow: 0 6px 22px rgba(0,0,0,0.3);
-    text-align: center;
-  }
-  h1 {
-    color: #2575fc;
-    margin-bottom: 8px;
-  }
-  h2 {
-    font-size: 16px;
-    font-weight: normal;
-    color: #555;
-    margin-bottom: 20px;
-  }
-  h3 {
-    margin-top: 10px;
-    color: #2575fc;
-  }
-  input {
-    width: 100%;
-    padding: 12px;
-    margin: 6px 0;
-    border: 1.5px solid #2575fc;
-    border-radius: 6px;
-    font-size: 15px;
-  }
-  input:focus {
-    border-color: #6a11cb;
-    outline: none;
-  }
-  .btn {
-    background: #2575fc;
-    color: #fff;
-    padding: 14px;
-    width: 100%;
-    border: none;
-    font-size: 18px;
-    margin-top: 10px;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  .btn:hover {
-    background: #6a11cb;
-  }
-  .msg {
-    margin-top: 10px;
-    font-weight: bold;
-  }
+  body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #6a11cb, #2575fc); margin: 0; display: flex; justify-content: center; align-items: flex-start; height: 100vh; }
+  .container { background: #fff; padding: 30px 40px; margin-top: 30px; border-radius: 10px; width: 380px; box-shadow: 0 6px 22px rgba(0,0,0,0.3); text-align: center; }
+  h1 { color: #2575fc; margin-bottom: 8px; }
+  h2 { font-size: 16px; font-weight: normal; color: #555; margin-bottom: 20px; }
+  input { width: 100%; padding: 12px; margin: 6px 0; border: 1.5px solid #2575fc; border-radius: 6px; font-size: 15px; }
+  input:focus { border-color: #6a11cb; outline: none; }
+  .btn { background: #2575fc; color: #fff; padding: 14px; width: 100%; border: none; font-size: 18px; margin-top: 10px; border-radius: 6px; cursor: pointer; }
+  .btn:hover { background: #6a11cb; }
+  .msg { margin-top: 10px; font-weight: bold; }
   .error { color: red; }
   .success { color: green; }
 </style>
-
 <script type="module">
   import CONFIG from '../secure/config/configure.js';
 
   async function handleSignup(event) {
     event.preventDefault();
+
     const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
     const phone = document.getElementById("phone").value.trim();
+    const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
     const repeatPassword = document.getElementById("repeat-password").value.trim();
     const msgElem = document.getElementById("msg");
     const btnElem = event.target;
 
-    // Validation
-    if (!name || !email || !phone || !password || !repeatPassword) {
+    if (!name || !phone || !email || !password || !repeatPassword) {
       msgElem.textContent = "Please fill all fields";
       msgElem.className = "msg error";
+      console.log("❌ Missing fields");
       return;
     }
     if (password !== repeatPassword) {
       msgElem.textContent = "Passwords do not match";
       msgElem.className = "msg error";
+      console.log("❌ Password mismatch");
       return;
     }
 
-    // Show loading state
     btnElem.disabled = true;
-    btnElem.textContent = "Please wait...";
+    btnElem.textContent = "Creating account...";
 
     try {
+      console.log("📤 Sending signup request to:", `${CONFIG.API_BASE_URL}/signup`);
       const res = await fetch(`${CONFIG.API_BASE_URL}/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, phone })
+        body: JSON.stringify({ name, phone, email, password })
       });
 
       const data = await res.json();
+      console.log("📥 Received response:", data);
 
-      if (data.message) {
-        const lowerMsg = data.message.toLowerCase();
-
-        if (lowerMsg.includes("already") || lowerMsg.includes("exists")) {
-          msgElem.textContent = "Your account already exists. Please login.";
-          msgElem.className = "msg error";
-        } 
-        else if (lowerMsg.includes("success")) {
-          msgElem.textContent = "Your account has been successfully created. Please check your email for the confirmation link.";
-          msgElem.className = "msg success";
-          setTimeout(() => {
-            window.location.href = "../login/login.html";
-          }, 3000);
-        } 
-        else {
-          msgElem.textContent = data.message;
-          msgElem.className = "msg error";
-        }
+      if (res.ok) {
+        msgElem.textContent = data.message || "Account created successfully!";
+        msgElem.className = "msg success";
+        setTimeout(() => { window.location.href = "../login/login.html"; }, 3000);
       } else {
-        msgElem.textContent = "Signup failed";
+        msgElem.textContent = data.message || "Signup failed";
         msgElem.className = "msg error";
       }
     } catch (err) {
-      console.error("Signup error:", err);
-      msgElem.textContent = "Server connection error!";
+      console.error("🔥 Frontend signup error:", err);
+      msgElem.textContent = "Server connection error! Check console logs.";
       msgElem.className = "msg error";
     }
 
-    // Reset button
     btnElem.disabled = false;
     btnElem.textContent = "Sign Up";
   }
@@ -148,18 +82,15 @@
 <body>
   <div class="container">
     <h1>Welcome to TubeEarn</h1>
-    <h2>World's No.1 Multi-Earning Platform</h2>
-
-    <h3>Create Account</h3>
-    <form>
-      <input type="text" id="name" placeholder="Full Name">
-      <input type="email" id="email" placeholder="Email">
-      <input type="tel" id="phone" placeholder="Phone Number">
-      <input type="password" id="password" placeholder="Password">
-      <input type="password" id="repeat-password" placeholder="Repeat Password">
-      <button class="btn" onclick="handleSignup(event)">Sign Up</button>
+    <h2>Create Account</h2>
+    <form onsubmit="handleSignup(event)">
+      <input type="text" id="name" placeholder="Full Name" />
+      <input type="tel" id="phone" placeholder="Phone Number" />
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+      <input type="password" id="repeat-password" placeholder="Repeat Password" />
+      <button class="btn" type="submit">Sign Up</button>
     </form>
-
     <p id="msg" class="msg"></p>
   </div>
 </body>
