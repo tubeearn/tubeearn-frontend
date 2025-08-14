@@ -1,4 +1,1 @@
-const CONFIG = {
-  API_BASE_URL: "https://tubeearn-backend.onrender.com"
-};
-export default CONFIG;
+export default { API_BASE_URL: "https://tubeearn-backend.onrender.com" };
