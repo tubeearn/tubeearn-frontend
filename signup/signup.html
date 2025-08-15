@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Signup</title>
+<style>
+  body { font-family: Arial; }
+  .msg { margin-top: 10px; font-weight: bold; }
+  .error { color: red; }
+  .success { color: green; }
+</style>
+</head>
+<body>
+<h1>Signup</h1>
+<input type="text" id="name" placeholder="Full Name" />
+<input type="tel" id="phone" placeholder="Phone Number" />
+<input type="email" id="email" placeholder="Email" />
+<input type="password" id="password" placeholder="Password" />
+<input type="password" id="repeat" placeholder="Repeat Password" />
+<button onclick="signup()">Sign Up</button>
+<p id="msg" class="msg"></p>
+
+<script type="module">
+import CONFIG from "../url/url.js";
+
+async function signup() {
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const repeat = document.getElementById("repeat").value.trim();
+  const msgElem = document.getElementById("msg");
+
+  if (!name || !phone || !email || !password || !repeat) {
+    msgElem.textContent = "Please fill all fields";
+    msgElem.className = "msg error";
+    return;
+  }
+  if (password !== repeat) {
+    msgElem.textContent = "Passwords do not match";
+    msgElem.className = "msg error";
+    return;
+  }
+  
+  try {
+    const res = await fetch(`${CONFIG.API_BASE_URL}/api/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, phone, email, password })
+    });
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      msgElem.textContent = data.message;
+      msgElem.className = "msg success";
+      setTimeout(() => {
+        window.location.href = "../login/login.html";
+      }, 4000);
+    } else {
+      msgElem.textContent = data.message || "Signup failed";
+      msgElem.className = "msg error";
+    }
+  } catch (err) {
+    msgElem.textContent = "Server connection error!";
+    msgElem.className = "msg error";
+  }
+}
+
+window.signup = signup;
+</script>
+</body>
+</html>
