@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>TubeEarn - Login</title>
+<title>TubeEarn - Login (Direct URL Test)</title>
 <style>
   body { font-family: Arial, sans-serif; background: linear-gradient(135deg,#6a11cb,#2575fc); margin:0; display:flex; justify-content:center; align-items:flex-start; height:100vh; }
   .container { background:#fff; padding:30px 40px; margin-top:50px; border-radius:10px; width:350px; box-shadow:0 6px 20px rgba(0,0,0,0.3); text-align:center; }
@@ -20,61 +20,57 @@
 </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Welcome to TubeEarn</h1>
-    <form>
-      <input type="email" id="email" placeholder="Enter your email" required><br>
-      <input type="password" id="password" placeholder="Enter your password" required><br>
-      <button class="btn" onclick="handleLogin(event)">Login</button>
-    </form>
-    <p id="msg" class="msg"></p>
-    <div class="links">
-      <a href="../forgot/forgot-password.html">Forgot Password?</a>
-    </div>
-
-    <script type="module">
-      import CONFIG from '../url/url.js';  // centralized config import
-      
-      async function handleLogin(event) {
-        event.preventDefault();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const msgElem = document.getElementById('msg');
-        
-        if (!email || !password) {
-          msgElem.textContent = "Please enter both email and password";
-          msgElem.className = 'msg error';
-          return;
-        }
-
-        try {
-          const res = await fetch(`${CONFIG.API_BASE_URL}/api/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-          });
-
-          const data = await res.json();
-
-          if (res.ok && data.success) {
-            msgElem.textContent = "Login successful!";
-            msgElem.className = 'msg success';
-            setTimeout(() => {
-              window.location.href = '../dashboard.html';  // अपना dashboard URL सेट करें
-            }, 1500);
-          } else {
-            msgElem.textContent = data.message || "Invalid credentials";
-            msgElem.className = 'msg error';
-          }
-        } catch (err) {
-          msgElem.textContent = "Server connection error!";
-          msgElem.className = 'msg error';
-          console.error(err);
-        }
-      }
-      
-      window.handleLogin = handleLogin;
-    </script>
+<div class="container">
+  <h1>Welcome to TubeEarn</h1>
+  <form>
+    <input type="email" id="email" placeholder="Enter your email" required><br>
+    <input type="password" id="password" placeholder="Enter your password" required><br>
+    <button class="btn" onclick="handleLogin(event)">Login</button>
+  </form>
+  <p id="msg" class="msg"></p>
+  <div class="links">
+    <a href="../forgot/forgot-password.html">Forgot Password?</a>
   </div>
+</div>
+
+<script>
+  async function handleLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const msgElem = document.getElementById('msg');
+
+    if (!email || !password) {
+      msgElem.textContent = "Please enter both email and password";
+      msgElem.className = 'msg error';
+      return;
+    }
+
+    try {
+      const res = await fetch("https://tubeearn-backend.onrender.com/api/login", { // ✅ Direct backend URL
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        msgElem.textContent = "Login successful!";
+        msgElem.className = 'msg success';
+        setTimeout(() => window.location.href = "../dashboard.html", 1500);
+      } else {
+        msgElem.textContent = data.message || "Invalid credentials";
+        msgElem.className = 'msg error';
+      }
+    } catch (error) {
+      console.error(error);
+      msgElem.textContent = "Server connection error!";
+      msgElem.className = 'msg error';
+    }
+  }
+
+  window.handleLogin = handleLogin;
+</script>
 </body>
 </html>
