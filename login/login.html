@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>TubeEarn - Login</title>
 <style>
   body { font-family: Arial, sans-serif; background: linear-gradient(135deg,#6a11cb,#2575fc); margin:0; display:flex; justify-content:center; align-items:flex-start; height:100vh; }
@@ -18,61 +18,63 @@
   .links { margin-top:12px; font-size:14px; }
   .links a { text-decoration:none; color:#2575fc; }
 </style>
-
-<script type="module">
-  import CONFIG from '/configure.js';
-
-  async function handleLogin(event) {
-    event.preventDefault();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const msgElem = document.getElementById("msg");
-
-    if (!email || !password) {
-      msgElem.textContent = "Please enter your email and password";
-      msgElem.className = "msg error";
-      return;
-    }
-
-    try {
-      const res = await fetch(`${CONFIG.API_BASE_URL}/api/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        msgElem.textContent = "Your login successfully!";
-        msgElem.className = "msg success";
-        setTimeout(() => { window.location.href = "/index.html"; }, 1500);
-      } else {
-        msgElem.textContent = data.message || "Invalid credentials";
-        msgElem.className = "msg error";
-      }
-    } catch (err) {
-      console.error(err);
-      msgElem.textContent = "Server connection error!";
-      msgElem.className = "msg error";
-    }
-  }
-
-  window.handleLogin = handleLogin;
-</script>
 </head>
 <body>
   <div class="container">
     <h1>Welcome to TubeEarn</h1>
     <form>
-      <input type="email" id="email" placeholder="Enter your email">
-      <input type="password" id="password" placeholder="Enter your password">
+      <input type="email" id="email" placeholder="Enter your email" required><br>
+      <input type="password" id="password" placeholder="Enter your password" required><br>
       <button class="btn" onclick="handleLogin(event)">Login</button>
     </form>
     <p id="msg" class="msg"></p>
     <div class="links">
       <a href="../forgot/forgot-password.html">Forgot Password?</a>
     </div>
+
+    <script type="module">
+      import CONFIG from '../url/url.js';  // centralized config import
+      
+      async function handleLogin(event) {
+        event.preventDefault();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const msgElem = document.getElementById('msg');
+        
+        if (!email || !password) {
+          msgElem.textContent = "Please enter both email and password";
+          msgElem.className = 'msg error';
+          return;
+        }
+
+        try {
+          const res = await fetch(`${CONFIG.API_BASE_URL}/api/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            msgElem.textContent = "Login successful!";
+            msgElem.className = 'msg success';
+            setTimeout(() => {
+              window.location.href = '../dashboard.html';  // अपना dashboard URL सेट करें
+            }, 1500);
+          } else {
+            msgElem.textContent = data.message || "Invalid credentials";
+            msgElem.className = 'msg error';
+          }
+        } catch (err) {
+          msgElem.textContent = "Server connection error!";
+          msgElem.className = 'msg error';
+          console.error(err);
+        }
+      }
+      
+      window.handleLogin = handleLogin;
+    </script>
   </div>
 </body>
 </html>
