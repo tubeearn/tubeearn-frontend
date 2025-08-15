@@ -46,17 +46,15 @@
     btnElem.textContent = "Creating account...";
 
     try {
-      console.log("📤 Sending request to:", `${CONFIG.API_BASE_URL}/signup`);
-      const res = await fetch(`${CONFIG.API_BASE_URL}/signup`, {
+      const res = await fetch(`${CONFIG.API_BASE_URL}/api/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, phone, email, password })
       });
 
       const data = await res.json();
-      console.log("📥 Response:", data);
 
-      if (res.ok) {
+      if (res.ok && data.success) {
         msgElem.textContent = data.message || "Account created!";
         msgElem.className = "msg success";
         setTimeout(() => window.location.href = "../login/login.html", 3000);
