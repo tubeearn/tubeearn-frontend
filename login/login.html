@@ -1,76 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>TubeEarn - Login (Direct URL Test)</title>
-<style>
-  body { font-family: Arial, sans-serif; background: linear-gradient(135deg,#6a11cb,#2575fc); margin:0; display:flex; justify-content:center; align-items:flex-start; height:100vh; }
-  .container { background:#fff; padding:30px 40px; margin-top:50px; border-radius:10px; width:350px; box-shadow:0 6px 20px rgba(0,0,0,0.3); text-align:center; }
-  h1 { color:#2575fc; margin-bottom:20px; }
-  input { width:100%; padding:12px; margin:8px 0; border:1.5px solid #2575fc; border-radius:6px; font-size:16px; }
-  input:focus { border-color:#6a11cb; outline:none; }
-  .btn { background:#2575fc; color:#fff; padding:14px; width:100%; font-size:18px; font-weight:bold; border:none; border-radius:6px; margin-top:10px; cursor:pointer; }
-  .btn:hover { background:#6a11cb; }
-  .msg { margin-top:10px; font-weight:bold; }
-  .error { color:red; }
-  .success { color:green; }
-  .links { margin-top:12px; font-size:14px; }
-  .links a { text-decoration:none; color:#2575fc; }
-</style>
+<meta charset="UTF-8">
+<title>Login Test</title>
 </head>
 <body>
-<div class="container">
-  <h1>Welcome to TubeEarn</h1>
-  <form>
-    <input type="email" id="email" placeholder="Enter your email" required><br>
-    <input type="password" id="password" placeholder="Enter your password" required><br>
-    <button class="btn" onclick="handleLogin(event)">Login</button>
-  </form>
-  <p id="msg" class="msg"></p>
-  <div class="links">
-    <a href="../forgot/forgot-password.html">Forgot Password?</a>
-  </div>
-</div>
+  <h1>Login</h1>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <p id="msg"></p>
 
 <script>
-  async function handleLogin(event) {
-    event.preventDefault();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const msgElem = document.getElementById('msg');
+async function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const msg = document.getElementById("msg");
 
-    if (!email || !password) {
-      msgElem.textContent = "Please enter both email and password";
-      msgElem.className = 'msg error';
-      return;
-    }
-
-    try {
-      const res = await fetch("https://tubeearn-backend.onrender.com/api/login", { // ✅ Direct backend URL
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        msgElem.textContent = "Login successful!";
-        msgElem.className = 'msg success';
-        setTimeout(() => window.location.href = "../dashboard.html", 1500);
-      } else {
-        msgElem.textContent = data.message || "Invalid credentials";
-        msgElem.className = 'msg error';
-      }
-    } catch (error) {
-      console.error(error);
-      msgElem.textContent = "Server connection error!";
-      msgElem.className = 'msg error';
-    }
+  if (!email || !password) {
+    msg.textContent = "Please enter email and password";
+    msg.style.color = "red";
+    return;
   }
 
-  window.handleLogin = handleLogin;
+  try {
+    const res = await fetch("https://tubeearn-backend.onrender.com/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      msg.textContent = "Login successful!";
+      msg.style.color = "green";
+    } else {
+      msg.textContent = data.message || "Login failed";
+      msg.style.color = "red";
+    }
+  } catch (err) {
+    msg.textContent = "Server connection error!";
+    msg.style.color = "red";
+  }
+}
 </script>
 </body>
 </html>
