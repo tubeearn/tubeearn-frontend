@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Signup Test</title>
+<meta charset="UTF-8" />
+<title>Signup</title>
+<style>
+  body { font-family: Arial; }
+  .msg { margin-top: 10px; font-weight: bold; }
+  .error { color: red; }
+  .success { color: green; }
+</style>
 </head>
 <body>
-  <h1>Signup</h1>
-  <input type="text" id="name" placeholder="Full Name">
-  <input type="tel" id="phone" placeholder="Phone">
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
-  <input type="password" id="repeat" placeholder="Repeat Password">
-  <button onclick="signup()">Sign Up</button>
-  <p id="msg"></p>
+<h1>Signup</h1>
+<input type="text" id="name" placeholder="Full Name" />
+<input type="tel" id="phone" placeholder="Phone Number" />
+<input type="email" id="email" placeholder="Email" />
+<input type="password" id="password" placeholder="Password" />
+<input type="password" id="repeat" placeholder="Repeat Password" />
+<button onclick="signup()">Sign Up</button>
+<p id="msg" class="msg"></p>
 
 <script>
 async function signup() {
@@ -21,17 +27,16 @@ async function signup() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
   const repeat = document.getElementById("repeat").value.trim();
-  const msg = document.getElementById("msg");
+  const msgElem = document.getElementById("msg");
 
   if (!name || !phone || !email || !password || !repeat) {
-    msg.textContent = "Please fill all fields";
-    msg.style.color = "red";
+    msgElem.textContent = "Please fill all fields";
+    msgElem.className = "msg error";
     return;
   }
-
   if (password !== repeat) {
-    msg.textContent = "Passwords do not match";
-    msg.style.color = "red";
+    msgElem.textContent = "Passwords do not match";
+    msgElem.className = "msg error";
     return;
   }
 
@@ -45,15 +50,19 @@ async function signup() {
     const data = await res.json();
 
     if (res.ok && data.success) {
-      msg.textContent = "Signup successful!";
-      msg.style.color = "green";
+      msgElem.textContent = data.message;
+      msgElem.className = "msg success";
+      // Redirect to login after 4s
+      setTimeout(() => {
+        window.location.href = "../login/login.html";
+      }, 4000);
     } else {
-      msg.textContent = data.message || "Signup failed";
-      msg.style.color = "red";
+      msgElem.textContent = data.message || "Signup failed";
+      msgElem.className = "msg error";
     }
   } catch (err) {
-    msg.textContent = "Server connection error!";
-    msg.style.color = "red";
+    msgElem.textContent = "Server connection error!";
+    msgElem.className = "msg error";
   }
 }
 </script>
