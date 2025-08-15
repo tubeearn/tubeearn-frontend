@@ -1,25 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Login Test</title>
+<meta charset="UTF-8" />
+<title>Login</title>
+<style>
+  body { font-family: Arial; }
+  .msg { margin-top: 10px; font-weight: bold; }
+  .error { color: red; }
+  .success { color: green; }
+</style>
 </head>
 <body>
-  <h1>Login</h1>
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <p id="msg"></p>
+<h1>Login</h1>
+<input type="email" id="email" placeholder="Email" />
+<input type="password" id="password" placeholder="Password" />
+<button onclick="login()">Login</button>
+<p id="msg" class="msg"></p>
 
 <script>
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const msgElem = document.getElementById('msg');
+  if (params.get('confirmed') === 'true') {
+    msgElem.textContent = '✅ Your account has been confirmed! Please login.';
+    msgElem.className = 'msg success';
+  }
+});
+
 async function login() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
-  const msg = document.getElementById("msg");
+  const msgElem = document.getElementById("msg");
 
   if (!email || !password) {
-    msg.textContent = "Please enter email and password";
-    msg.style.color = "red";
+    msgElem.textContent = "Please enter email and password";
+    msgElem.className = "msg error";
     return;
   }
 
@@ -33,15 +48,17 @@ async function login() {
     const data = await res.json();
 
     if (res.ok && data.success) {
-      msg.textContent = "Login successful!";
-      msg.style.color = "green";
+      msgElem.textContent = "Login successful!";
+      msgElem.className = "msg success";
+      // Redirect to dashboard
+      setTimeout(() => window.location.href = "../dashboard.html", 1500);
     } else {
-      msg.textContent = data.message || "Login failed";
-      msg.style.color = "red";
+      msgElem.textContent = data.message || "Login failed";
+      msgElem.className = "msg error";
     }
   } catch (err) {
-    msg.textContent = "Server connection error!";
-    msg.style.color = "red";
+    msgElem.textContent = "Server connection error!";
+    msgElem.className = "msg error";
   }
 }
 </script>
