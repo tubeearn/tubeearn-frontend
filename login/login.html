@@ -35,7 +35,7 @@
     }
 
     try {
-      const res = await fetch(`${CONFIG.API_BASE_URL}/login`, {
+      const res = await fetch(`${CONFIG.API_BASE_URL}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
@@ -43,19 +43,11 @@
 
       const data = await res.json();
 
-      // अगर पहले से user मौजूद है और login success है
-      if (data.message && data.message.toLowerCase().includes("successful")) {
+      if (res.ok && data.success) {
         msgElem.textContent = "Your login successfully!";
         msgElem.className = "msg success";
         setTimeout(() => { window.location.href = "/index.html"; }, 1500);
-      }
-      // अगर Invalid credentials है लेकिन user already exists है
-      else if (data.message && data.message.toLowerCase().includes("already exists")) {
-        msgElem.textContent = "Your login successfully!";
-        msgElem.className = "msg success";
-        setTimeout(() => { window.location.href = "/index.html"; }, 1500);
-      }
-      else {
+      } else {
         msgElem.textContent = data.message || "Invalid credentials";
         msgElem.className = "msg error";
       }
@@ -71,7 +63,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Welcome to T1</h1>
+    <h1>Welcome to TubeEarn</h1>
     <form>
       <input type="email" id="email" placeholder="Enter your email">
       <input type="password" id="password" placeholder="Enter your password">
@@ -79,7 +71,7 @@
     </form>
     <p id="msg" class="msg"></p>
     <div class="links">
-      <a href="forgot/forgot-password.html">Forgot Password?</a>
+      <a href="../forgot/forgot-password.html">Forgot Password?</a>
     </div>
   </div>
 </body>
