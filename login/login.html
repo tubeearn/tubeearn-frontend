@@ -51,7 +51,7 @@ async function login() {
       msgElem.textContent = "Login successful!";
       msgElem.className = "msg success";
       // Redirect to dashboard
-      setTimeout(() => window.location.href = "../dashboard.html", 1500);
+      setTimeout(() => window.location.href = "../index.html", 1500);
     } else {
       msgElem.textContent = data.message || "Login failed";
       msgElem.className = "msg error";
