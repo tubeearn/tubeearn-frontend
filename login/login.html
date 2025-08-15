@@ -1,68 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Login</title>
-<style>
-  body { font-family: Arial; }
-  .msg { margin-top: 10px; font-weight: bold; }
-  .error { color: red; }
-  .success { color: green; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - TubeEarn</title>
 </head>
 <body>
-<h1>Login</h1>
-<input type="email" id="email" placeholder="Email" />
-<input type="password" id="password" placeholder="Password" />
-<button onclick="login()">Login</button>
-<p id="msg" class="msg"></p>
+  <h1>Login</h1>
+  
+  <form id="loginForm">
+    <input type="email" id="email" placeholder="Email" required /><br />
+    <input type="password" id="password" placeholder="Password" required /><br />
+    <button type="submit">Login</button>
+  </form>
 
-<script type="module">
-import CONFIG from "../url/url.js";
+  <p id="message"></p>
 
-window.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
-  const msgElem = document.getElementById('msg');
-  if (params.get('confirmed') === 'true') {
-    msgElem.textContent = '✅ Your account has been confirmed! Please login.';
-    msgElem.className = 'msg success';
-  }
-});
+  <script type="module">
+    import CONFIG from "../url/url.js";
 
-async function login() {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
-  const msgElem = document.getElementById("msg");
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  if (!email || !password) {
-    msgElem.textContent = "Please enter email and password";
-    msgElem.className = "msg error";
-    return;
-  }
-    
-  try {
-    const res = await fetch(`${CONFIG.API_BASE_URL}/api/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      try {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/auth/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+        document.getElementById("message").innerText = data.message || "Login successful!";
+      } catch (error) {
+        document.getElementById("message").innerText = "Server connection error!";
+      }
     });
-    const data = await res.json();
-
-    if (res.ok && data.success) {
-      msgElem.textContent = "Login successful!";
-      msgElem.className = "msg success";
-      setTimeout(() => window.location.href = "../index.html", 1500);
-    } else {
-      msgElem.textContent = data.message || "Login failed";
-      msgElem.className = "msg error";
-    }
-  } catch (err) {
-    msgElem.textContent = "Server connection error!";
-    msgElem.className = "msg error";
-  }
-}
-
-window.login = login;
-</script>
+  </script>
 </body>
 </html>
