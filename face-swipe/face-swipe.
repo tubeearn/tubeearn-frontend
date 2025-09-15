@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple Face Swap</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f9f9f9;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 5px 25px rgba(0,0,0,.1);
+      width: 400px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: #e53935;
+    }
+    input[type="file"] {
+      margin: 10px 0;
+      width: 100%;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 25px;
+      font-weight: bold;
+      color: white;
+      background-color: #e53935;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    #downloadLink {
+      margin-top: 20px;
+      display: none;
+      color: #388e3c;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    #status {
+      margin-top: 12px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>❤️ Face Swap Video</h1>
+    <input type="file" id="videoInput" accept="video/*" required />
+    <input type="file" id="photoInput" accept="image/*" required />
+    <button id="processBtn">Proceed & Merge</button>
+    <br />
+    <a id="downloadLink" href="#" download="merged_hd_video.mp4">Download HD Video</a>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    const videoInput = document.getElementById('videoInput');
+    const photoInput = document.getElementById('photoInput');
+    const processBtn = document.getElementById('processBtn');
+    const downloadLink = document.getElementById('downloadLink');
+    const status = document.getElementById('status');
+
+    processBtn.addEventListener('click', async () => {
+      if (!videoInput.files.length || !photoInput.files.length) {
+        alert('Please upload both video and photo files!');
+        return;
+      }
+
+      processBtn.disabled = true;
+      status.textContent = 'Processing... Please wait!';
+      downloadLink.style.display = 'none';
+
+      const formData = new FormData();
+      formData.append('video', videoInput.files[0]);
+      formData.append('photo', photoInput.files[0]);
+
+      try {
+        const response = await fetch('/merge', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to process video');
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        downloadLink.href = url;
+        downloadLink.style.display = 'inline-block';
+        status.textContent = 'Processing done! Download your video below.';
+      } catch (err) {
+        status.textContent = 'Error: ' + err.message;
+      } finally {
+        processBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
