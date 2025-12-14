@@ -1,47 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Signup - TubeEarn</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* CSS: Styling and Layout */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            /* Colorful Gradient Background */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Aligns to top */
+            padding-top: 80px; /* Space from top */
+        }
+
+        .signup-container {
+            background-color: #ffffff;
+            width: 400px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .signup-container h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #764ba2;
+            outline: none;
+        }
+
+        /* Captcha Styles */
+        .captcha-box {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            user-select: none;
+        }
+
+        .captcha-code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 24px;
+            font-weight: bold;
+            color: #764ba2;
+            letter-spacing: 3px;
+            text-decoration: line-through;
+        }
+
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: #667eea;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        /* Sign Up Button */
+        .btn-signup {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+        }
+
+        .login-link {
+            margin-top: 20px;
+            display: block;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #764ba2;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-  <h1>Signup</h1>
-  
-  <form id="signupForm">
-    <input type="text" id="name" placeholder="Full Name" required /><br />
-    <input type="email" id="email" placeholder="Email" required /><br />
-    <input type="password" id="password" placeholder="Password" required /><br />
-    <button type="submit">Signup</button>
-  </form>
 
-  <p id="message"></p>
+    <div class="signup-container">
+        <h2>Create Account</h2>
+        <form id="signupForm">
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="fullName" placeholder="Enter your name" required>
+            </div>
 
-  <script type="module">
-    import CONFIG from "../url/url.js";
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
 
-    document.getElementById("signupForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+            <div class="input-group">
+                <label>Phone Number</label>
+                <input type="tel" id="phone" placeholder="Enter phone number" required>
+            </div>
 
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Create a password" required>
+            </div>
 
-      try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/auth/signup`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ name, email, password })
+            <div class="input-group">
+                <label>Captcha</label>
+                <div class="captcha-box">
+                    <span class="captcha-code" id="captchaDisplay"></span>
+                    <button type="button" class="refresh-btn" onclick="generateCaptcha()">&#x21bb;</button>
+                </div>
+                <input type="text" id="captchaInput" placeholder="Enter the code above" required>
+            </div>
+
+            <button type="submit" class="btn-signup">Sign Up</button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="../login/login.html">Login here</a>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Supabase Initialization ---
+        // यहाँ अपनी URL और KEY डालो
+        const supabaseUrl = 'YOUR_SUPABASE_URL_HERE';
+        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY_HERE';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // --- 2. Captcha Logic ---
+        let captchaCode = '';
+
+        function generateCaptcha() {
+            const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let result = '';
+            for (let i = 0; i < 5; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            captchaCode = result;
+            document.getElementById('captchaDisplay').innerText = result;
+        }
+
+        // Generate captcha on page load
+        window.onload = generateCaptcha;
+
+        // --- 3. Sign Up Logic ---
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const userCaptcha = document.getElementById('captchaInput').value;
+            const submitBtn = document.querySelector('.btn-signup');
+
+            // Verify Captcha
+            if (userCaptcha.toUpperCase() !== captchaCode) {
+                alert("Incorrect Captcha! Please try again.");
+                generateCaptcha();
+                document.getElementById('captchaInput').value = '';
+                return;
+            }
+
+            // Disable button to prevent double click
+            submitBtn.textContent = "Signing up...";
+            submitBtn.disabled = true;
+
+            // Call Supabase API
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        full_name: fullName,
+                        phone: phone
+                    }
+                }
+            });
+
+            if (error) {
+                alert("Error: " + error.message);
+                submitBtn.textContent = "Sign Up";
+                submitBtn.disabled = false;
+            } else {
+                alert("Signup Successful! Redirecting to Login...");
+                // Redirect logic
+                // अगर login.html किसी और फोल्डर में है तो path बदल लेना
+                // अभी के लिए मान रहे हैं यह parallel folder में या root में है
+                window.location.href = '../login/login.html'; 
+            }
         });
-
-        const data = await res.json();
-        document.getElementById("message").innerText = data.message || "Signup successful!";
-      } catch (error) {
-        document.getElementById("message").innerText = "Server connection error!";
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>
+
