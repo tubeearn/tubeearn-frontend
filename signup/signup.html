@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>True One - Sign Up</title>
     <style>
-        /* --- डिजाइन (Design) वही रखा गया है --- */
+        /* --- डिजाइन (Design) बिल्कुल सेम है --- */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f4f9;
@@ -43,7 +43,7 @@
             font-size: 14px;
         }
 
-        /* --- कैप्चा डिजाइन (Captcha Design) --- */
+        /* --- कैप्चा डिजाइन --- */
         .captcha-box {
             background-color: #eee;
             color: #222;
@@ -56,7 +56,7 @@
             text-align: center;
             font-family: 'Courier New', monospace;
             border: 1px dashed #999;
-            user-select: none; /* कॉपी होने से रोकने के लिए */
+            user-select: none; 
         }
 
         .refresh-btn {
@@ -104,7 +104,6 @@
     <input type="password" id="password" placeholder="Password">
 
     <div id="captcha-display" class="captcha-box"></div>
-    
     <button onclick="generateCaptcha()" class="refresh-btn">⟳ Refresh Captcha</button>
     
     <input type="text" id="captcha-input" placeholder="Enter Captcha here">
@@ -115,50 +114,64 @@
 </div>
 
 <script>
-    /* --- फिक्स्ड कैप्चा लॉजिक (Fixed Logic) --- */
-    
     let generatedCaptcha = "";
 
+    // 1. रैंडम कैप्चा जनरेट करना
     function generateCaptcha() {
-        // यहाँ से मैंने कन्फ्यूजन वाले अक्षर (जैसे O, 0, I, l) हटा दिए हैं ताकि कैप्चा आसान (Easy) रहे
         const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz";
-        const captchaLength = 5; // कैप्चा की लंबाई 5 रखी है
+        const captchaLength = 5;
         let captcha = "";
-
         for (let i = 0; i < captchaLength; i++) {
-            const randomIndex = Math.floor(Math.random() * chars.length);
-            captcha += chars[randomIndex];
+            captcha += chars[Math.floor(Math.random() * chars.length)];
         }
-
         generatedCaptcha = captcha;
-        // कैप्चा को बॉक्स में दिखाएं
         document.getElementById("captcha-display").innerText = captcha;
     }
 
-    // जैसे ही पेज खुले, नया कैप्चा आ जाए
     window.onload = generateCaptcha;
 
+    // 2. फॉर्म वैलिडेशन और रीडायरेक्ट लॉजिक
     function validateForm() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
         const userInput = document.getElementById("captcha-input").value;
         const message = document.getElementById("message");
 
-        // अगर खाली छोड़ा है
-        if (userInput === "") {
+        // खाली फील्ड्स चेक करना
+        if (email === "" || password === "" || userInput === "") {
             message.style.color = "red";
-            message.innerText = "Please enter the Captcha.";
+            message.innerText = "Please fill all details.";
             return;
         }
 
-        // सही या गलत की जाँच
-        if (userInput === generatedCaptcha) {
-            message.style.color = "green";
-            message.innerText = "Success! Signing up...";
-            // यहाँ फॉर्म सबमिट कर सकते हैं
-        } else {
+        // कैप्चा गलत होने पर
+        if (userInput !== generatedCaptcha) {
             message.style.color = "red";
-            message.innerText = "Incorrect Captcha. Try again.";
-            generateCaptcha(); // गलती होने पर कैप्चा बदल जाएगा
-            document.getElementById("captcha-input").value = ""; // इनपुट खाली हो जाएगा
+            message.innerText = "Incorrect Captcha! Try again.";
+            generateCaptcha(); 
+            document.getElementById("captcha-input").value = ""; 
+            return;
+        }
+
+        // --- सिम्युलेशन (Simulation): चेक करें कि यूजर पहले से है या नहीं ---
+        // नोट: असली वेबसाइट में यह डेटाबेस से चेक होता है, यहाँ हम ब्राउज़र मेमोरी use कर रहे हैं।
+        
+        let storedUsers = JSON.parse(localStorage.getItem("trueOneUsers")) || [];
+
+        if (storedUsers.includes(email)) {
+            // CASE 1: अगर यूजर पहले से मौजूद है
+            alert("Your account is already created! Redirecting to Login...");
+            window.location.href = "login.html"; // लॉगिन पेज पर रीडायरेक्ट
+        } else {
+            // CASE 2: नया यूजर (Sign Up Success)
+            storedUsers.push(email);
+            localStorage.setItem("trueOneUsers", JSON.stringify(storedUsers));
+            
+            message.style.color = "green";
+            message.innerText = "Sign Up Successful!";
+            
+            alert("Sign Up Successful! Redirecting to Login...");
+            window.location.href = "login.html"; // लॉगिन पेज पर रीडायरेक्ट
         }
     }
 </script>
